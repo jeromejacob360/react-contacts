@@ -1,4 +1,4 @@
-import { doc, getDoc, setDoc } from "@firebase/firestore";
+import { doc, getDoc, onSnapshot, setDoc } from "@firebase/firestore";
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router";
 import { db } from "../firebase/firebase";
@@ -8,49 +8,75 @@ import {
   faPhone,
   faStar,
   faEllipsisV,
-  faWindowClose,
+  faArrowLeft,
 } from "@fortawesome/free-solid-svg-icons";
+import { Link } from "react-router-dom";
+import ContactOptions from "./ContactOptions";
 
 export default function ContactDetails() {
   const [contact, setContact] = useState({});
+  const [openOptions, setOpenOptions] = useState(false);
+
   const { email } = useParams();
 
-  async function getContact() {
-    const temp = (await getDoc(doc(db, "contacts", email))).data();
-    setContact(temp);
-  }
-
-  async function toggleContactStar() {
-    await setDoc(doc(db, "contacts", contact.email), {
-      ...contact,
-      starred: !contact.starred,
-    });
-  }
-
   useEffect(() => {
-    getContact();
-  }, []);
+    const unsub = onSnapshot(doc(db, "contacts", email), (doc) => {
+      setContact(doc.data());
+    });
+    return unsub;
+  }, [email]);
+
+  async function starContact(e) {
+    await setDoc(
+      doc(db, "contacts", contact.docId),
+      {
+        starred: !contact.starred,
+      },
+      { merge: true }
+    );
+  }
+
+  function toggleOptions() {
+    setOpenOptions(true);
+  }
 
   return (
-    <div className="max-w-screen-md mx-auto">
-      {JSON.stringify(contact)}
+    <div className="max-w-screen-md mx-auto px-4">
+      <Link to="/">
+        <FontAwesomeIcon icon={faArrowLeft} />
+      </Link>
       <section className="border-b mb-4 flex justify-between px-10 pb-6">
         <div className="flex space-x-10 items-center my-10">
           <img
-            className="h-2w-48 w-48 rounded-full object-cover mr-2"
+            className="h-48 w-48 rounded-full object-cover mr-2"
             src={contact?.imageURL || "/no_avatar.jpg"}
             alt=""
           />
           <h4 className="text-xl">{`${contact?.firstName} ${contact?.surname}`}</h4>
         </div>
-        <div className="self-end space-x-6">
+        <div className="self-end space-x-4 flex items-center">
           <FontAwesomeIcon
-            onClick={toggleContactStar}
             icon={faStar}
-            className=" opacity-30"
+            onClick={starContact}
+            className={`${
+              contact?.starred ? "text-yellow-400" : "text-gray-400"
+            }`}
           />
-          <FontAwesomeIcon icon={faEllipsisV} />
-          <button className="btn">Edit</button>
+
+          <div className="relative">
+            <FontAwesomeIcon onClick={toggleOptions} icon={faEllipsisV} />
+            {openOptions && (
+              <ContactOptions
+                setOptionsOpen={setOpenOptions}
+                docId={contact?.docId}
+              />
+            )}
+          </div>
+          <Link to={"/edit/" + contact?.docId}>
+            <button className="border-2 border-blue-500 rounded-md px-3 shadow-blue">
+              Edit
+            </button>
+          </Link>
         </div>
       </section>
       <div className="border rounded-md space-x-4 p-4 block w-96 ml-auto">

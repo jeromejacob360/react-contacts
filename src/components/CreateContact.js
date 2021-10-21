@@ -1,7 +1,6 @@
 import { doc, setDoc } from "@firebase/firestore";
 import { useEffect, useRef, useState } from "react";
 import { useHistory, useParams } from "react-router";
-import { toast } from "react-toastify";
 import { db } from "../firebase/firebase";
 import { firestoreAutoId } from "./helpers/firestoreIdGenerator";
 import {
@@ -30,8 +29,7 @@ export default function CreateContact({
   const { id } = useParams();
   const avatarRef = useRef();
 
-  let url = "";
-
+  //for input fields
   function setvalue(e) {
     setNewContact((prev) => ({
       ...prev,
@@ -39,13 +37,15 @@ export default function CreateContact({
     }));
   }
 
+  //sets up preview of the chosen image
   useEffect(() => {
     if (userImage) {
       const url = URL.createObjectURL(userImage);
       avatarRef.current.style.backgroundImage = `url(${url})`;
     }
-  }, [newContact.imageURL, userImage]);
+  }, [userImage]);
 
+  //for use in edit mode. Populates the bg img from the contact
   useEffect(() => {
     if (newContact.imageURL) {
       avatarRef.current.style.backgroundImage = `url(${newContact.imageURL})`;
@@ -56,63 +56,61 @@ export default function CreateContact({
     e.preventDefault();
 
     if (newContact.email) {
-      if (userImage) {
-        const promise = new Promise((res, rej) => {
-          const storage = getStorage();
-          const storageRef = ref(storage, newContact.email);
-
-          const uploadTask = uploadBytesResumable(storageRef, userImage);
-
-          uploadTask.on(
-            "state_changed",
-            (snapshot) => {
-              const progress =
-                (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-              console.log("Upload is " + progress + "% done");
-            },
-            (error) => {
-              console.log(`error`, error);
-              rej(error);
-            },
-            () => {
-              getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
-                res(downloadURL);
-              });
-            }
-          );
-        });
-
-        setLoading(true);
-        url = await promise;
-
-        setLoading(false);
-      }
-
+      const docId = id || firestoreAutoId();
+      // add contact to firestore
       setLoading(true);
       try {
-        const docId = id || firestoreAutoId();
         await setDoc(doc(db, "contacts", docId), {
           ...newContact,
-          imageURL: url,
           docId,
         });
-
-        setNewContact(initialState);
-        toast.success("Done!");
         setLoading(false);
+        setNewContact(initialState);
+        history.push("/");
       } catch (error) {
         setLoading(false);
         console.log(`error`, error.message);
       }
 
-      history.push("/");
+      if (userImage) {
+        //upload image to cloud storage
+        try {
+          const storage = getStorage();
+          const storageRef = ref(storage, docId);
+          console.log(`docId`, docId);
+
+          const uploadTask = uploadBytesResumable(storageRef, userImage);
+
+          uploadTask.on(
+            "state_changed",
+            () => {},
+            (error) => {
+              console.log("IMAGE UPLOAD FAILED");
+              console.log(`error`, error);
+            },
+            () => {
+              getDownloadURL(uploadTask.snapshot.ref).then(
+                async (downloadURL) => {
+                  await setDoc(
+                    doc(db, "contacts", docId),
+                    { imageURL: downloadURL },
+                    { merge: true }
+                  );
+                }
+              );
+            }
+          );
+        } catch (error) {
+          console.log(`error`, error);
+        }
+      }
     }
   }
 
   return (
     <div className="flex flex-col space-y-2 max-w-screen-sm mx-auto">
       <Link to="/">
-        <FontAwesomeIcon icon={faWindowClose} className={`text-gray-500`} />
+        <FontAwesomeIcon icon={faWindowClose} className={`text-blue-500`} />
       </Link>
 
       <form className="flex justify-between items-end">

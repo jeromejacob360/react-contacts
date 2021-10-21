@@ -12,7 +12,11 @@
 
 svg {
   cursor: pointer;
-  color: rgb(46, 184, 53);
+  color: #3b82f6;
+}
+
+svg:hover {
+  @apply scale-110;
 }
 
 .btn {

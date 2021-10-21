@@ -6,6 +6,7 @@ import { useState } from "react";
 import { Route, Switch } from "react-router-dom";
 import Navbar from "./components/Navbar";
 import ContactDetails from "./components/ContactDetails";
+import useContacts from "./components/hooks/useContacts";
 
 const initialState = {
   imageURL: "",
@@ -18,7 +19,11 @@ const initialState = {
 };
 
 function App() {
+  const [contacts, setContacts] = useState([]);
   const [newContact, setNewContact] = useState(initialState);
+  const [contactsBackup, setContactsBackup] = useState([]);
+
+  useContacts(setContactsBackup, setContacts);
 
   return (
     <>
@@ -27,7 +32,7 @@ function App() {
         autoClose={2000}
         hideProgressBar
       />
-      <Navbar />
+      <Navbar setContacts={setContacts} contacts={contactsBackup} />
       <Switch>
         <Route path="/new">
           <CreateContact
@@ -44,7 +49,11 @@ function App() {
           />
         </Route>
         <Route exact path="/">
-          <Contacts setNewContact={setNewContact} />
+          <Contacts
+            contacts={contacts}
+            setContacts={setContacts}
+            setNewContact={setNewContact}
+          />
         </Route>
         <Route path="/person/:email" component={ContactDetails} />
       </Switch>
