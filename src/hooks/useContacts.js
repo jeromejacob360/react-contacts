@@ -1,6 +1,6 @@
 import { collection, onSnapshot } from "@firebase/firestore";
 import { useEffect } from "react";
-import { db } from "../../firebase/firebase";
+import { db } from "../firebase/firebase";
 
 export default function useContacts(setContactsBackup, setContacts) {
   useEffect(() => {

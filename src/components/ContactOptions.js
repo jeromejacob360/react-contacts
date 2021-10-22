@@ -2,7 +2,7 @@ import { deleteDoc, doc } from "@firebase/firestore";
 import React, { useState } from "react";
 import { useHistory } from "react-router";
 import { db } from "../firebase/firebase";
-import ClickAway from "./helpers/ClickAway";
+import ClickAway from "../helpers/ClickAway";
 
 export default function ContactOptions({
   reverseMenu = false,

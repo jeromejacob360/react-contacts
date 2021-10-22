@@ -5,7 +5,6 @@ import { db } from "../firebase/firebase";
 import ContactOptions from "./ContactOptions";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEllipsisV, faStar } from "@fortawesome/free-solid-svg-icons";
-import ClickAway from "./helpers/ClickAway";
 
 export default function Contact({ contact, setNewContact }) {
   const [optionsOpen, setOptionsOpen] = useState(false);
@@ -25,7 +24,7 @@ export default function Contact({ contact, setNewContact }) {
   function edit(e) {
     e.stopPropagation();
     setNewContact(contact);
-    history.push("/edit/" + contact.docId);
+    history.push("/person/edit/" + contact.docId);
   }
 
   function menuReverser(e) {
@@ -39,23 +38,23 @@ export default function Contact({ contact, setNewContact }) {
   return (
     <div
       onClick={(e) => {
-        if (!e.target.classList.contains("MODAL"))
-          history.push("/person/" + contact.docId);
+        history.push("/person/" + contact.docId);
       }}
-      className="flex justify-between items-center relative group py-2 px-2 hover:bg-gray-200 cursor-pointer"
+      className="relative flex items-center justify-between px-2 py-2 rounded-lg cursor-pointer hover:bg-indigo-50 hover:shadow-sm group"
     >
       <img
-        className="h-10 w-10 rounded-full object-cover mr-2"
+        className="hidden object-cover w-10 h-10 mr-2 rounded-full sm:block"
         src={contact.imageURL || "/no_avatar.jpg"}
         alt=""
       />
-      <div className="items-center space-x-2 mx-4 grid grid-cols-4 flex-1">
+      <div className="grid items-center flex-1 grid-cols-2 mx-4 space-x-2 sm:grid-cols-3 md:grid-cols-4">
         <h4>{`${contact.firstName} ${contact.surname}`}</h4>
         <h5>{contact.phone}</h5>
-        <h5>{contact.email}</h5>
+        <h5 className="hidden sm:block">{contact.email}</h5>
+        <h5 className="hidden md:block">{contact.notes}</h5>
       </div>
-      <div className="absolute right-4 opacity-0 group-hover:opacity-100 flex items-center">
-        <span className="px-2" onClick={(e) => starContact(e, contact)}>
+      <div className="absolute flex items-center pl-2 space-x-4 opacity-0 right-4 bg-indigo-50 group-hover:opacity-100">
+        <span onClick={(e) => starContact(e, contact)}>
           <FontAwesomeIcon
             icon={faStar}
             className={`${
@@ -64,13 +63,9 @@ export default function Contact({ contact, setNewContact }) {
           />
         </span>
 
-        <span className="px-2" onClick={edit}>
-          ✏️
-        </span>
+        <span onClick={edit}>✏️</span>
         <span onClick={menuReverser}>
           <FontAwesomeIcon
-            size="4x"
-            className={`px-2`}
             onClick={() => setOptionsOpen((prev) => !prev)}
             icon={faEllipsisV}
           />

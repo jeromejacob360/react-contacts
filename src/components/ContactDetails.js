@@ -1,4 +1,4 @@
-import { doc, getDoc, onSnapshot, setDoc } from "@firebase/firestore";
+import { doc, onSnapshot, setDoc } from "@firebase/firestore";
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router";
 import { db } from "../firebase/firebase";
@@ -17,20 +17,20 @@ export default function ContactDetails() {
   const [contact, setContact] = useState({});
   const [openOptions, setOpenOptions] = useState(false);
 
-  const { email } = useParams();
+  const { id } = useParams();
 
   useEffect(() => {
-    const unsub = onSnapshot(doc(db, "contacts", email), (doc) => {
+    const unsub = onSnapshot(doc(db, "contacts", id), (doc) => {
       setContact(doc.data());
     });
     return unsub;
-  }, [email]);
+  }, [id]);
 
   async function starContact(e) {
     await setDoc(
-      doc(db, "contacts", contact.docId),
+      doc(db, "contacts", contact?.docId),
       {
-        starred: !contact.starred,
+        starred: !contact?.starred,
       },
       { merge: true }
     );
@@ -41,20 +41,20 @@ export default function ContactDetails() {
   }
 
   return (
-    <div className="max-w-screen-md mx-auto px-4">
+    <div className="max-w-screen-md px-4 mx-auto">
       <Link to="/">
         <FontAwesomeIcon icon={faArrowLeft} />
       </Link>
-      <section className="border-b mb-4 flex justify-between px-10 pb-6">
-        <div className="flex space-x-10 items-center my-10">
+      <section className="flex justify-between px-10 pb-6 mb-4 border-b">
+        <div className="flex items-center my-10 space-x-10">
           <img
-            className="h-48 w-48 rounded-full object-cover mr-2"
+            className="object-cover w-48 h-48 mr-2 rounded-full"
             src={contact?.imageURL || "/no_avatar.jpg"}
             alt=""
           />
           <h4 className="text-xl">{`${contact?.firstName} ${contact?.surname}`}</h4>
         </div>
-        <div className="self-end space-x-4 flex items-center">
+        <div className="flex items-center self-end space-x-4">
           <FontAwesomeIcon
             icon={faStar}
             onClick={starContact}
@@ -72,16 +72,16 @@ export default function ContactDetails() {
               />
             )}
           </div>
-          <Link to={"/edit/" + contact?.docId}>
-            <button className="border-2 border-blue-500 rounded-md px-3 shadow-blue">
+          <Link to={"/person/edit/" + contact?.docId}>
+            <button className="px-3 border-2 border-indigo-600 rounded-md">
               Edit
             </button>
           </Link>
         </div>
       </section>
-      <div className="border rounded-md space-x-4 p-4 block w-96 ml-auto">
+      <div className="block p-4 ml-auto space-x-4 border rounded-md w-96">
         <address>
-          <h5 className="font-bold mb-4">Contact details</h5>
+          <h5 className="mb-4 font-bold">Contact details</h5>
           <div className="space-x-4">
             <FontAwesomeIcon icon={faEnvelope} />
 

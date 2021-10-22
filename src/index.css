@@ -7,7 +7,7 @@
 }
 
 .input {
-  @apply border-b p-1;
+  @apply p-1 border-b;
 }
 
 svg {
@@ -20,9 +20,9 @@ svg:hover {
 }
 
 .btn {
-  @apply bg-blue-500 rounded-md shadow-md px-6 cursor-pointer py-1 text-white active:opacity-80;
+  @apply px-6 py-1 text-white bg-indigo-600 rounded-md shadow-md cursor-pointer;
 }
 
 ul li {
-  @apply bg-gray-50 px-4 py-1 hover:bg-gray-200;
+  @apply px-4 py-1 bg-gray-50 hover:bg-gray-200;
 }

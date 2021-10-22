@@ -7,7 +7,7 @@ export default function Search({ contacts, setContacts }) {
 
   useEffect(() => {
     setContacts(
-      contacts.filter((contact) => {
+      contacts?.filter((contact) => {
         const fn = contact.firstName;
         const ln = contact.surname;
         const fullName = fn ? (ln ? `${fn}${ln}` : fn) : "";
@@ -18,17 +18,21 @@ export default function Search({ contacts, setContacts }) {
 
   return (
     <div>
-      <label className="border shadow-sm justify-between p-2 w-96 items-center flex rounded-md space-x-4">
+      <label className="flex items-center justify-between px-2 py-1 space-x-4 border rounded-md shadow-sm">
         <FontAwesomeIcon icon={faSearch} />
         <input
           type="text"
           placeholder="Search"
-          className="bg-transparent outline-none flex-1"
+          className="flex-1 bg-transparent outline-none"
           onChange={(e) => setQuery(e.target.value)}
           value={query}
         />
         {query && (
-          <FontAwesomeIcon onClick={() => setQuery("")} icon={faWindowClose} />
+          <FontAwesomeIcon
+            icon={faWindowClose}
+            className="p-2 bg-red-400"
+            onClick={() => setQuery("")}
+          />
         )}
       </label>
     </div>

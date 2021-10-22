@@ -1,63 +1,69 @@
-import CreateContact from "./components/CreateContact";
-import Contacts from "./components/Contacts";
-import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import { useState } from "react";
-import { Route, Switch } from "react-router-dom";
-import Navbar from "./components/Navbar";
+import Home from "./pages/Home";
+import useContacts from "./hooks/useContacts";
+import { useEffect, useState } from "react";
+import Signup from "./pages/Signup";
+import { getAuth } from "@firebase/auth";
+import {
+  BrowserRouter as Router,
+  Switch,
+  Route,
+  Redirect,
+} from "react-router-dom";
+import Signin from "./pages/Signin";
+import CreateContact from "./components/CreateContact";
 import ContactDetails from "./components/ContactDetails";
-import useContacts from "./components/hooks/useContacts";
-
-const initialState = {
-  imageURL: "",
-  firstName: "",
-  surname: "",
-  email: "",
-  phone: "",
-  notes: "",
-  starred: false,
-};
 
 function App() {
-  const [contacts, setContacts] = useState([]);
-  const [newContact, setNewContact] = useState(initialState);
   const [contactsBackup, setContactsBackup] = useState([]);
+  const [contacts, setContacts] = useState([]);
+  const [currentUser, setCurrentUser] = useState({});
 
   useContacts(setContactsBackup, setContacts);
 
+  useEffect(() => {
+    getAuth().onAuthStateChanged((currentUser) => {
+      console.log(`currentUser`, currentUser);
+      setCurrentUser(currentUser);
+    });
+  }, []);
+
   return (
-    <>
-      <ToastContainer
-        position="bottom-center"
-        autoClose={2000}
-        hideProgressBar
-      />
-      <Navbar setContacts={setContacts} contacts={contactsBackup} />
+    <Router>
       <Switch>
-        <Route path="/new">
-          <CreateContact
-            newContact={newContact}
-            setNewContact={setNewContact}
-            initialState={initialState}
-          />
+        <Route exact path="/signin">
+          {currentUser ? <Redirect to="/" /> : <Signin />}
         </Route>
-        <Route path="/edit/:id">
-          <CreateContact
-            newContact={newContact}
-            setNewContact={setNewContact}
-            initialState={initialState}
-          />
+
+        <Route exact path="/signup">
+          {currentUser ? <Redirect to="/" /> : <Signup />}
         </Route>
+
+        <Route exact path="/new">
+          {currentUser ? <CreateContact /> : <Signin />}
+        </Route>
+
+        <Route exact path="/person/:id">
+          {currentUser ? <ContactDetails /> : <Signin />}
+        </Route>
+
+        <Route exact path="/person/edit/:id">
+          {currentUser ? <CreateContact /> : <Signin />}
+        </Route>
+
         <Route exact path="/">
-          <Contacts
-            contacts={contacts}
-            setContacts={setContacts}
-            setNewContact={setNewContact}
-          />
+          {currentUser ? (
+            <Home
+              contacts={contacts}
+              setContacts={setContacts}
+              contactsBackup={contactsBackup}
+            />
+          ) : (
+            <Redirect to="/signin" />
+          )}
         </Route>
-        <Route path="/person/:email" component={ContactDetails} />
       </Switch>
-    </>
+    </Router>
   );
 }
 

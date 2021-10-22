@@ -2,7 +2,7 @@ import { doc, setDoc } from "@firebase/firestore";
 import { useEffect, useRef, useState } from "react";
 import { useHistory, useParams } from "react-router";
 import { db } from "../firebase/firebase";
-import { firestoreAutoId } from "./helpers/firestoreIdGenerator";
+import { firestoreAutoId } from "../helpers/firestoreIdGenerator";
 import {
   getStorage,
   ref,
@@ -47,10 +47,10 @@ export default function CreateContact({
 
   //for use in edit mode. Populates the bg img from the contact
   useEffect(() => {
-    if (newContact.imageURL) {
-      avatarRef.current.style.backgroundImage = `url(${newContact.imageURL})`;
+    if (newContact?.imageURL) {
+      avatarRef.current.style.backgroundImage = `url(${newContact?.imageURL})`;
     }
-  }, [newContact.imageURL]);
+  }, [newContact?.imageURL]);
 
   async function addContactToDB(e) {
     e.preventDefault();
@@ -108,16 +108,16 @@ export default function CreateContact({
   }
 
   return (
-    <div className="flex flex-col space-y-2 max-w-screen-sm mx-auto">
+    <div className="flex flex-col max-w-screen-sm mx-auto space-y-2">
       <Link to="/">
-        <FontAwesomeIcon icon={faWindowClose} className={`text-blue-500`} />
+        <FontAwesomeIcon icon={faWindowClose} className={`text-indigo-600`} />
       </Link>
 
-      <form className="flex justify-between items-end">
+      <form className="flex items-end justify-between">
         <label
           ref={avatarRef}
           htmlFor="image"
-          className="rounded-full w-40 h-40 grid place-items-center bg-cover"
+          className="grid w-40 h-40 bg-cover rounded-full place-items-center"
           style={{ backgroundImage: "url(no_avatar.jpg)" }}
         >
           <FontAwesomeIcon
@@ -141,7 +141,7 @@ export default function CreateContact({
             <FontAwesomeIcon
               icon={faSpinner}
               pulse
-              className="text-white ml-2"
+              className="ml-2 text-white"
             />
           )}
         </button>
@@ -152,7 +152,7 @@ export default function CreateContact({
         type="text"
         placeholder="First Name"
         name="firstName"
-        value={newContact.firstName}
+        value={newContact?.firstName}
         onChange={setvalue}
       />
       <input
@@ -161,7 +161,7 @@ export default function CreateContact({
         type="text"
         placeholder="Surname"
         name="surname"
-        value={newContact.surname}
+        value={newContact?.surname}
         onChange={setvalue}
       />
       <input
@@ -170,7 +170,7 @@ export default function CreateContact({
         type="text"
         placeholder="Email"
         name="email"
-        value={newContact.email}
+        value={newContact?.email}
         onChange={setvalue}
         disabled={lockEmail}
       />
@@ -180,7 +180,7 @@ export default function CreateContact({
         type="text"
         placeholder="Phone"
         name="phone"
-        value={newContact.phone}
+        value={newContact?.phone}
         onChange={setvalue}
       />
       <input
@@ -189,7 +189,7 @@ export default function CreateContact({
         type="text"
         placeholder="Notes"
         name="notes"
-        value={newContact.notes}
+        value={newContact?.notes}
         onChange={setvalue}
       />
     </div>
