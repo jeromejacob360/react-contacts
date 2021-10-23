@@ -13,22 +13,25 @@ import {
 import { Link } from "react-router-dom";
 import ContactOptions from "./ContactOptions";
 
-export default function ContactDetails() {
+export default function ContactDetails({ currentUser }) {
   const [contact, setContact] = useState({});
   const [openOptions, setOpenOptions] = useState(false);
 
   const { id } = useParams();
 
   useEffect(() => {
-    const unsub = onSnapshot(doc(db, "contacts", id), (doc) => {
-      setContact(doc.data());
-    });
+    const unsub = onSnapshot(
+      doc(db, "contactsApp/userContacts", currentUser.email, id),
+      (doc) => {
+        setContact(doc.data());
+      }
+    );
     return unsub;
   }, [id]);
 
   async function starContact(e) {
     await setDoc(
-      doc(db, "contacts", contact?.docId),
+      doc(db, "contactsApp/userContacts", currentUser.email, contact?.docId),
       {
         starred: !contact?.starred,
       },
@@ -54,7 +57,7 @@ export default function ContactDetails() {
           />
           <h4 className="text-xl">{`${contact?.firstName} ${contact?.surname}`}</h4>
         </div>
-        <div className="flex items-center self-end space-x-4">
+        <div className="flex items-center self-end">
           <FontAwesomeIcon
             icon={faStar}
             onClick={starContact}
@@ -63,16 +66,19 @@ export default function ContactDetails() {
             }`}
           />
 
-          <div className="relative">
+          <div className="relative px-4">
             <FontAwesomeIcon onClick={toggleOptions} icon={faEllipsisV} />
             {openOptions && (
               <ContactOptions
+                currentUser={currentUser}
                 setOptionsOpen={setOpenOptions}
                 docId={contact?.docId}
               />
             )}
           </div>
-          <Link to={"/person/edit/" + contact?.docId}>
+          <Link
+            to={{ pathname: "/person/edit/" + contact?.docId, state: contact }}
+          >
             <button className="px-3 border-2 border-indigo-600 rounded-md">
               Edit
             </button>

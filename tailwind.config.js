@@ -6,6 +6,7 @@ module.exports = {
   },
   variants: {
     extend: {
+      boxShadow: ["active"],
       opacity: ["active"],
     },
   },

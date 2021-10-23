@@ -18,7 +18,7 @@ export default function Search({ contacts, setContacts }) {
 
   return (
     <div>
-      <label className="flex items-center justify-between px-2 py-1 space-x-4 border rounded-md shadow-sm">
+      <label className="flex items-center justify-between px-2 py-1 space-x-4 border border-blue-500 rounded-md shadow-sm">
         <FontAwesomeIcon icon={faSearch} />
         <input
           type="text"
@@ -27,13 +27,15 @@ export default function Search({ contacts, setContacts }) {
           onChange={(e) => setQuery(e.target.value)}
           value={query}
         />
-        {query && (
+        {
           <FontAwesomeIcon
+            className={`duration-200 ${
+              query ? "opacity-100" : "opacity-0 cursor-text"
+            }`}
             icon={faWindowClose}
-            className="p-2 bg-red-400"
             onClick={() => setQuery("")}
           />
-        )}
+        }
       </label>
     </div>
   );

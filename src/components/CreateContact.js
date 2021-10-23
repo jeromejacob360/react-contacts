@@ -1,6 +1,7 @@
 import { doc, setDoc } from "@firebase/firestore";
+import { getAuth } from "@firebase/auth";
 import { useEffect, useRef, useState } from "react";
-import { useHistory, useParams } from "react-router";
+import { useHistory, useLocation, useParams } from "react-router";
 import { db } from "../firebase/firebase";
 import { firestoreAutoId } from "../helpers/firestoreIdGenerator";
 import {
@@ -17,19 +18,38 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { Link } from "react-router-dom";
 
-export default function CreateContact({
-  newContact,
-  setNewContact,
-  initialState,
-  lockEmail,
-}) {
+const initialState = {
+  imageURL: "",
+  firstName: "",
+  surname: "",
+  email: "",
+  phone: "",
+  notes: "",
+  starred: false,
+};
+
+export default function CreateContact({ currentUser }) {
+  const [newContact, setNewContact] = useState(initialState);
   const [userImage, setUserImage] = useState("");
   const [loading, setLoading] = useState(false);
+  const [user, setUser] = useState(false);
+
   const history = useHistory();
   const { id } = useParams();
   const avatarRef = useRef();
 
-  //for input fields
+  const { state } = useLocation();
+
+  useEffect(() => {
+    setUser(currentUser);
+  }, []);
+
+  // populate the fields
+  useEffect(() => {
+    if (state) setNewContact(state);
+  }, [state]);
+
+  //for updating input fields
   function setvalue(e) {
     setNewContact((prev) => ({
       ...prev,
@@ -54,57 +74,61 @@ export default function CreateContact({
 
   async function addContactToDB(e) {
     e.preventDefault();
-
-    if (newContact.email) {
-      const docId = id || firestoreAutoId();
-      // add contact to firestore
-      setLoading(true);
-      try {
-        await setDoc(doc(db, "contacts", docId), {
-          ...newContact,
-          docId,
-        });
-        setLoading(false);
-        setNewContact(initialState);
-        history.push("/");
-      } catch (error) {
-        setLoading(false);
-        console.log(`error`, error.message);
-      }
-
-      if (userImage) {
-        //upload image to cloud storage
+    if (user)
+      if (newContact.email) {
+        const docId = id || firestoreAutoId();
+        // add contact to firestore
+        setLoading(true);
         try {
-          const storage = getStorage();
-          const storageRef = ref(storage, docId);
-          console.log(`docId`, docId);
-
-          const uploadTask = uploadBytesResumable(storageRef, userImage);
-
-          uploadTask.on(
-            "state_changed",
-            () => {},
-            (error) => {
-              console.log("IMAGE UPLOAD FAILED");
-              console.log(`error`, error);
-            },
-            () => {
-              getDownloadURL(uploadTask.snapshot.ref).then(
-                async (downloadURL) => {
-                  await setDoc(
-                    doc(db, "contacts", docId),
-                    { imageURL: downloadURL },
-                    { merge: true }
-                  );
-                }
-              );
-            }
-          );
+          await setDoc(doc(db, "contactsApp/userContacts", user.email, docId), {
+            ...newContact,
+            docId,
+          });
+          setLoading(false);
+          setNewContact(initialState);
+          history.push("/");
         } catch (error) {
-          console.log(`error`, error);
+          setLoading(false);
+          console.log(`error`, error.message);
+        }
+
+        if (userImage) {
+          //upload image to cloud storage
+          try {
+            const storage = getStorage();
+            const storageRef = ref(storage, docId);
+
+            const uploadTask = uploadBytesResumable(storageRef, userImage);
+
+            uploadTask.on(
+              "state_changed",
+              () => {},
+              (error) => {
+                console.log("IMAGE UPLOAD FAILED");
+                console.log(`error`, error);
+              },
+              () => {
+                getDownloadURL(uploadTask.snapshot.ref).then(
+                  async (downloadURL) => {
+                    await setDoc(
+                      doc(
+                        db,
+                        "contactsApp/userContacts",
+                        currentUser.email,
+                        docId
+                      ),
+                      { imageURL: downloadURL },
+                      { merge: true }
+                    );
+                  }
+                );
+              }
+            );
+          } catch (error) {
+            console.log(`error`, error);
+          }
         }
       }
-    }
   }
 
   return (
@@ -172,7 +196,6 @@ export default function CreateContact({
         name="email"
         value={newContact?.email}
         onChange={setvalue}
-        disabled={lockEmail}
       />
       <input
         className="input"

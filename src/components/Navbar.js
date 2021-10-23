@@ -1,9 +1,17 @@
 import { getAuth } from "@firebase/auth";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import Search from "./Search";
 
 export default function Navbar({ setContacts, contacts }) {
+  const [user, setUser] = useState(false);
+  useEffect(() => {
+    getAuth().onAuthStateChanged((user) => {
+      if (user) setUser(user);
+      else setUser(false);
+    });
+  });
+
   async function signout() {
     await getAuth().signOut();
   }
@@ -18,13 +26,17 @@ export default function Navbar({ setContacts, contacts }) {
             </span>
           </Link>
         </div>
-        <Search setContacts={setContacts} contacts={contacts} />
-        <button
-          className="px-3 py-1 text-indigo-600 border-2 border-indigo-600 rounded-md shadow-md"
-          onClick={signout}
-        >
-          Signout
-        </button>
+        {contacts.length > 0 && (
+          <Search setContacts={setContacts} contacts={contacts} />
+        )}
+        {user && (
+          <button
+            className="px-3 py-1 text-indigo-600 border-2 border-indigo-600 rounded-md shadow-md"
+            onClick={signout}
+          >
+            Signout
+          </button>
+        )}
       </nav>
     </section>
   );

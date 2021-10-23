@@ -8,6 +8,7 @@ export default function ContactOptions({
   reverseMenu = false,
   docId,
   setOptionsOpen,
+  currentUser,
 }) {
   const [deleteModal, setDeleteModal] = useState(false);
 
@@ -20,18 +21,21 @@ export default function ContactOptions({
 
   async function deleteContact(e) {
     e.stopPropagation();
+
     setDeleteModal(false);
-    await deleteDoc(doc(db, "contacts", docId));
+    await deleteDoc(
+      doc(db, "contactsApp/userContacts", currentUser?.email, docId)
+    );
     history.push("/");
   }
 
   if (deleteModal)
     return (
-      <div className="fixed h-screen w-screen inset-0 grid place-items-center bg-black bg-opacity-10 z-10 MODAL">
+      <div className="fixed inset-0 z-10 grid w-screen h-screen bg-black place-items-center bg-opacity-10 MODAL">
         <ClickAway setOption={setDeleteModal}>
-          <div className="p-4 border shadow-md rounded-md bg-white w-96 MODAL">
+          <div className="p-4 bg-white border rounded-md shadow-md w-96 MODAL">
             <div className="MODAL">Delete this contact?</div>
-            <div className="space-x-4 mt-6 flex justify-end MODAL">
+            <div className="flex justify-end mt-6 space-x-4 MODAL">
               <button
                 onClick={(e) => {
                   e.stopPropagation();

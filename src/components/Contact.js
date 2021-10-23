@@ -6,7 +6,7 @@ import ContactOptions from "./ContactOptions";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEllipsisV, faStar } from "@fortawesome/free-solid-svg-icons";
 
-export default function Contact({ contact, setNewContact }) {
+export default function Contact({ contact, currentUser }) {
   const [optionsOpen, setOptionsOpen] = useState(false);
   const [reverseMenu, setReverseMenu] = useState(false);
 
@@ -15,24 +15,19 @@ export default function Contact({ contact, setNewContact }) {
   async function starContact(e) {
     e.stopPropagation();
     await setDoc(
-      doc(db, "contacts", contact.docId),
+      doc(db, "contactsApp/userContacts", currentUser.email, contact.docId),
       { starred: !contact.starred },
       { merge: true }
     );
   }
 
-  function edit(e) {
-    e.stopPropagation();
-    setNewContact(contact);
-    history.push("/person/edit/" + contact.docId);
-  }
-
   function menuReverser(e) {
     e.stopPropagation();
     const elemY = Math.floor(e.target.getBoundingClientRect().y);
-    window.innerHeight - elemY < 100
+    window.innerHeight - elemY < 200
       ? setReverseMenu(true)
       : setReverseMenu(false);
+    setOptionsOpen((prev) => !prev);
   }
 
   return (
@@ -53,8 +48,11 @@ export default function Contact({ contact, setNewContact }) {
         <h5 className="hidden sm:block">{contact.email}</h5>
         <h5 className="hidden md:block">{contact.notes}</h5>
       </div>
-      <div className="absolute flex items-center pl-2 space-x-4 opacity-0 right-4 bg-indigo-50 group-hover:opacity-100">
-        <span onClick={(e) => starContact(e, contact)}>
+      <div className="absolute flex items-center h-full pl-2 opacity-0 right-4 group-hover:opacity-100">
+        <span
+          onClick={(e) => starContact(e, contact)}
+          className="flex items-center h-full pl-8 pr-4 bg-gradient-to-r from-transparent to-indigo-50"
+        >
           <FontAwesomeIcon
             icon={faStar}
             className={`${
@@ -62,17 +60,23 @@ export default function Contact({ contact, setNewContact }) {
             }`}
           />
         </span>
+        <div className="flex items-center h-full bg-indigo-50">
+          {/* <Link
+            to={{ pathname: "/person/edit/" + contact.docId, state: contact }}
+          >
+            <button onClick={(e) => e.stopPropagation()}>✏️</button>
+          </Link>
+          
+          TODO setup edit */}
 
-        <span onClick={edit}>✏️</span>
-        <span onClick={menuReverser}>
-          <FontAwesomeIcon
-            onClick={() => setOptionsOpen((prev) => !prev)}
-            icon={faEllipsisV}
-          />
-        </span>
+          <span className="px-4" onClick={menuReverser}>
+            <FontAwesomeIcon icon={faEllipsisV} />
+          </span>
+        </div>
       </div>
       {optionsOpen && (
         <ContactOptions
+          currentUser={currentUser}
           reverseMenu={reverseMenu}
           docId={contact.docId}
           setOptionsOpen={setOptionsOpen}
