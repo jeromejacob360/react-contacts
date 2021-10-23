@@ -14,6 +14,7 @@ export default function Signin() {
     e.preventDefault();
     try {
       await signInWithEmailAndPassword(getAuth(), user.email, user.password);
+      console.log("SIGNED IN");
       history.push("/");
     } catch (error) {
       console.log(`error`, error);

@@ -5,6 +5,7 @@ import { db } from "../firebase/firebase";
 import ContactOptions from "./ContactOptions";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEllipsisV, faStar } from "@fortawesome/free-solid-svg-icons";
+import no_avatar from "../images/no_avatar.jpg";
 
 export default function Contact({ contact, currentUser }) {
   const [optionsOpen, setOptionsOpen] = useState(false);
@@ -39,7 +40,7 @@ export default function Contact({ contact, currentUser }) {
     >
       <img
         className="hidden object-cover w-10 h-10 mr-2 rounded-full sm:block"
-        src={contact.imageURL || "/no_avatar.jpg"}
+        src={contact.imageURL || no_avatar}
         alt=""
       />
       <div className="grid items-center flex-1 grid-cols-2 mx-4 space-x-2 sm:grid-cols-3 md:grid-cols-4">

@@ -1,5 +1,4 @@
 import { doc, setDoc } from "@firebase/firestore";
-import { getAuth } from "@firebase/auth";
 import { useEffect, useRef, useState } from "react";
 import { useHistory, useLocation, useParams } from "react-router";
 import { db } from "../firebase/firebase";
@@ -42,7 +41,7 @@ export default function CreateContact({ currentUser }) {
 
   useEffect(() => {
     setUser(currentUser);
-  }, []);
+  }, [currentUser]);
 
   // populate the fields
   useEffect(() => {

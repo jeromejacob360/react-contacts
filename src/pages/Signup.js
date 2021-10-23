@@ -3,10 +3,9 @@ import {
   getAuth,
   createUserWithEmailAndPassword,
   updateProfile,
-  onAuthStateChanged,
 } from "firebase/auth";
 
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { Link } from "react-router-dom";
 
 export default function Signup() {

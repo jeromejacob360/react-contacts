@@ -13,6 +13,7 @@ import CreateContact from "./components/CreateContact";
 import ContactDetails from "./components/ContactDetails";
 import Navbar from "./components/Navbar";
 import useContacts from "./hooks/useContacts";
+import PageNotFound from "./pages/PageNotFound";
 
 function App() {
   const [contactsBackup, setContactsBackup] = useState([]);
@@ -33,9 +34,22 @@ function App() {
 
   return (
     <>
-      <Navbar setContacts={setContacts} contacts={contactsBackup} />
-      <Router>
+      <Router basename="/react-contacts">
+        <Navbar setContacts={setContacts} contacts={contactsBackup} />
         <Switch>
+          <Route exact path="/">
+            {currentUser ? (
+              <Home
+                currentUser={currentUser}
+                contacts={contacts}
+                setContacts={setContacts}
+                contactsBackup={contactsBackup}
+              />
+            ) : (
+              <Redirect to="/signin" />
+            )}
+          </Route>
+
           <Route exact path="/signin">
             {currentUser ? <Redirect to="/" /> : <Signin />}
           </Route>
@@ -68,18 +82,7 @@ function App() {
             )}
           </Route>
 
-          <Route exact path="/">
-            {currentUser ? (
-              <Home
-                currentUser={currentUser}
-                contacts={contacts}
-                setContacts={setContacts}
-                contactsBackup={contactsBackup}
-              />
-            ) : (
-              <Redirect to="/signin" />
-            )}
-          </Route>
+          <Route component={PageNotFound} />
         </Switch>
       </Router>
     </>

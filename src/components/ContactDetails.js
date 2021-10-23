@@ -12,6 +12,7 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { Link } from "react-router-dom";
 import ContactOptions from "./ContactOptions";
+import no_avatar from "../images/no_avatar.jpg";
 
 export default function ContactDetails({ currentUser }) {
   const [contact, setContact] = useState({});
@@ -20,14 +21,16 @@ export default function ContactDetails({ currentUser }) {
   const { id } = useParams();
 
   useEffect(() => {
-    const unsub = onSnapshot(
-      doc(db, "contactsApp/userContacts", currentUser.email, id),
-      (doc) => {
-        setContact(doc.data());
-      }
-    );
+    let unsub;
+    if (currentUser?.email)
+      unsub = onSnapshot(
+        doc(db, "contactsApp/userContacts", currentUser?.email, id),
+        (doc) => {
+          setContact(doc.data());
+        }
+      );
     return unsub;
-  }, [id]);
+  }, [currentUser?.email, id]);
 
   async function starContact(e) {
     await setDoc(
@@ -52,7 +55,7 @@ export default function ContactDetails({ currentUser }) {
         <div className="flex items-center my-10 space-x-10">
           <img
             className="object-cover w-48 h-48 mr-2 rounded-full"
-            src={contact?.imageURL || "/no_avatar.jpg"}
+            src={contact?.imageURL || no_avatar}
             alt=""
           />
           <h4 className="text-xl">{`${contact?.firstName} ${contact?.surname}`}</h4>
