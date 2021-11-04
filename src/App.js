@@ -1,19 +1,19 @@
-import Home from "./pages/Home";
-import { useEffect, useState } from "react";
-import Signup from "./pages/Signup";
-import { getAuth } from "@firebase/auth";
+import Home from './pages/Home';
+import { useEffect, useState } from 'react';
+import Signup from './pages/Signup';
+import { getAuth } from '@firebase/auth';
 import {
   BrowserRouter as Router,
   Switch,
   Route,
   Redirect,
-} from "react-router-dom";
-import Signin from "./pages/Signin";
-import CreateContact from "./components/CreateContact";
-import ContactDetails from "./components/ContactDetails";
-import Navbar from "./components/Navbar";
-import useContacts from "./hooks/useContacts";
-import PageNotFound from "./pages/PageNotFound";
+} from 'react-router-dom';
+import Signin from './pages/Signin';
+import CreateContact from './components/CreateContact';
+import ContactDetails from './components/ContactDetails';
+import Navbar from './components/Navbar';
+import useContacts from './hooks/useContacts';
+import PageNotFound from './pages/PageNotFound';
 
 function App() {
   const [contactsBackup, setContactsBackup] = useState([]);
@@ -34,7 +34,7 @@ function App() {
 
   return (
     <>
-      <Router basename="/react-contacts">
+      <Router>
         <Navbar setContacts={setContacts} contacts={contactsBackup} />
         <Switch>
           <Route exact path="/">
