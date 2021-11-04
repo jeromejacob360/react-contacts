@@ -1,21 +1,25 @@
-import { useHistory } from "react-router";
+import { useHistory } from 'react-router';
 import {
   getAuth,
   createUserWithEmailAndPassword,
   updateProfile,
-} from "firebase/auth";
+} from 'firebase/auth';
 
-import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import { setDoc, doc } from '@firebase/firestore';
+
+import React, { useState } from 'react';
+import { Link } from 'react-router-dom';
+import { db } from '../firebase/firebase';
+const initialState = {
+  firstName: '',
+  surName: '',
+  email: '',
+  password: '',
+};
 
 export default function Signup() {
   const history = useHistory();
-  const [user, setUser] = useState({
-    firstName: "",
-    surName: "",
-    email: "",
-    password: "",
-  });
+  const [user, setUser] = useState(initialState);
 
   async function createUser(e) {
     e.preventDefault();
@@ -23,12 +27,18 @@ export default function Signup() {
 
     try {
       await createUserWithEmailAndPassword(auth, user.email, user.password);
+      await setDoc(doc(db, 'contactsApp/userDetails/placeHolder', user.email), {
+        firstName: user.firstName,
+        surName: user.surName,
+        email: user.email,
+      });
+      setUser(initialState);
 
       setTimeout(async () => {
         await updateProfile(getAuth().currentUser, {
           displayName: `${user?.firstName} ${user?.surName}`,
         });
-        history.push("/");
+        history.push('/');
       }, 0);
     } catch (error) {
       console.log(`error.message`, error.message);
