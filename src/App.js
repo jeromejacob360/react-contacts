@@ -34,7 +34,7 @@ function App() {
 
   return (
     <>
-      <Router>
+      {/* <Router>
         <Navbar setContacts={setContacts} contacts={contactsBackup} />
         <Switch>
           <Route exact path="/">
@@ -84,7 +84,9 @@ function App() {
 
           <Route component={PageNotFound} />
         </Switch>
-      </Router>
+      </Router> */}
+
+      <p>NO ROUTER</p>
     </>
   );
 }
