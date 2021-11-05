@@ -1,11 +1,11 @@
-import { doc, setDoc } from "@firebase/firestore";
-import React, { useState } from "react";
-import { useHistory } from "react-router";
-import { db } from "../firebase/firebase";
-import ContactOptions from "./ContactOptions";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faEllipsisV, faStar } from "@fortawesome/free-solid-svg-icons";
-import no_avatar from "../images/no_avatar.jpg";
+import { doc, setDoc } from '@firebase/firestore';
+import React, { useState } from 'react';
+import { useHistory } from 'react-router';
+import { db } from '../firebase/firebase';
+import ContactOptions from './ContactOptions';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faEllipsisV, faStar } from '@fortawesome/free-solid-svg-icons';
+import no_avatar from '../images/no_avatar.jpg';
 
 export default function Contact({ contact, currentUser }) {
   const [optionsOpen, setOptionsOpen] = useState(false);
@@ -16,9 +16,9 @@ export default function Contact({ contact, currentUser }) {
   async function starContact(e) {
     e.stopPropagation();
     await setDoc(
-      doc(db, "contactsApp/userContacts", currentUser.email, contact.docId),
+      doc(db, 'contactsApp/userContacts', currentUser.email, contact.docId),
       { starred: !contact.starred },
-      { merge: true }
+      { merge: true },
     );
   }
 
@@ -34,7 +34,7 @@ export default function Contact({ contact, currentUser }) {
   return (
     <div
       onClick={(e) => {
-        history.push("/person/" + contact.docId);
+        history.push('/person/' + contact.docId);
       }}
       className="relative flex items-center justify-between px-2 py-2 rounded-lg cursor-pointer hover:bg-indigo-50 hover:shadow-sm group"
     >
@@ -57,19 +57,11 @@ export default function Contact({ contact, currentUser }) {
           <FontAwesomeIcon
             icon={faStar}
             className={`${
-              contact.starred ? "text-yellow-400" : "text-gray-400"
+              contact.starred ? 'text-yellow-400' : 'text-gray-400'
             }`}
           />
         </span>
         <div className="flex items-center h-full bg-indigo-50">
-          {/* <Link
-            to={{ pathname: "/person/edit/" + contact.docId, state: contact }}
-          >
-            <button onClick={(e) => e.stopPropagation()}>✏️</button>
-          </Link>
-          
-          TODO setup edit */}
-
           <span className="px-4" onClick={menuReverser}>
             <FontAwesomeIcon icon={faEllipsisV} />
           </span>

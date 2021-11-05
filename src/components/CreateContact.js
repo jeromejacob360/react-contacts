@@ -1,52 +1,40 @@
-import { doc, setDoc } from "@firebase/firestore";
-import { useEffect, useRef, useState } from "react";
-import { useHistory, useLocation, useParams } from "react-router";
-import { db } from "../firebase/firebase";
-import { firestoreAutoId } from "../helpers/firestoreIdGenerator";
-import {
-  getStorage,
-  ref,
-  uploadBytesResumable,
-  getDownloadURL,
-} from "firebase/storage";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-  faWindowClose,
-  faCamera,
-  faSpinner,
-} from "@fortawesome/free-solid-svg-icons";
-import { Link } from "react-router-dom";
+import { doc, setDoc } from '@firebase/firestore';
+import { useEffect, useRef, useState } from 'react';
+import { useHistory, useLocation, useParams } from 'react-router';
+import { db } from '../firebase/firebase';
+import { firestoreAutoId } from '../helpers/firestoreIdGenerator';
+
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faWindowClose, faSpinner } from '@fortawesome/free-solid-svg-icons';
+import { Link } from 'react-router-dom';
+import { deleteImage, uploadImage } from '../helpers/uploadImage';
+import ImageSetter from './ImageSetter';
+import { getStorage, ref, deleteObject } from 'firebase/storage';
 
 const initialState = {
-  imageURL: "",
-  firstName: "",
-  surname: "",
-  email: "",
-  phone: "",
-  notes: "",
+  imageURL: '',
+  firstName: '',
+  surname: '',
+  email: '',
+  phone: '',
+  notes: '',
   starred: false,
 };
 
 export default function CreateContact({ currentUser }) {
   const [newContact, setNewContact] = useState(initialState);
-  const [userImage, setUserImage] = useState("");
+  const [avatarFile, setAvatarFile] = useState(null);
   const [loading, setLoading] = useState(false);
-  const [user, setUser] = useState(false);
 
   const history = useHistory();
   const { id } = useParams();
-  const avatarRef = useRef();
 
-  const { state } = useLocation();
-
-  useEffect(() => {
-    setUser(currentUser);
-  }, [currentUser]);
+  const { state: existingContact } = useLocation();
 
   // populate the fields
   useEffect(() => {
-    if (state) setNewContact(state);
-  }, [state]);
+    if (existingContact) setNewContact(existingContact);
+  }, [existingContact]);
 
   //for updating input fields
   function setvalue(e) {
@@ -58,74 +46,43 @@ export default function CreateContact({ currentUser }) {
 
   //sets up preview of the chosen image
   useEffect(() => {
-    if (userImage) {
-      const url = URL.createObjectURL(userImage);
-      avatarRef.current.style.backgroundImage = `url(${url})`;
+    if (avatarFile) {
+      const url = URL.createObjectURL(avatarFile);
+      setNewContact((prev) => ({ ...prev, imageURL: url }));
     }
-  }, [userImage]);
-
-  //for use in edit mode. Populates the bg img from the contact
-  useEffect(() => {
-    if (newContact?.imageURL) {
-      avatarRef.current.style.backgroundImage = `url(${newContact?.imageURL})`;
-    }
-  }, [newContact?.imageURL]);
+  }, [avatarFile]);
 
   async function addContactToDB(e) {
     e.preventDefault();
-    if (user)
+    if (currentUser)
       if (newContact.email) {
         const docId = id || firestoreAutoId();
         // add contact to firestore
         setLoading(true);
         try {
-          await setDoc(doc(db, "contactsApp/userContacts", user.email, docId), {
-            ...newContact,
-            docId,
-          });
+          await setDoc(
+            doc(db, 'contactsApp/userContacts', currentUser.email, docId),
+            {
+              ...newContact,
+              docId,
+            },
+          );
           setLoading(false);
+
           setNewContact(initialState);
-          history.push("/");
+          history.push('/');
         } catch (error) {
           setLoading(false);
           console.log(`error`, error.message);
         }
 
-        if (userImage) {
-          //upload image to cloud storage
-          try {
-            const storage = getStorage();
-            const storageRef = ref(storage, docId);
+        const storageLocation = currentUser.email + '/' + docId;
+        const dbLocation = `contactsApp/userContacts/${currentUser.email}/${docId}`;
 
-            const uploadTask = uploadBytesResumable(storageRef, userImage);
-
-            uploadTask.on(
-              "state_changed",
-              () => {},
-              (error) => {
-                console.log("IMAGE UPLOAD FAILED");
-                console.log(`error`, error);
-              },
-              () => {
-                getDownloadURL(uploadTask.snapshot.ref).then(
-                  async (downloadURL) => {
-                    await setDoc(
-                      doc(
-                        db,
-                        "contactsApp/userContacts",
-                        currentUser.email,
-                        docId
-                      ),
-                      { imageURL: downloadURL },
-                      { merge: true }
-                    );
-                  }
-                );
-              }
-            );
-          } catch (error) {
-            console.log(`error`, error);
-          }
+        if (avatarFile) {
+          uploadImage(avatarFile, storageLocation, dbLocation);
+        } else {
+          deleteImage(storageLocation, dbLocation);
         }
       }
   }
@@ -137,27 +94,11 @@ export default function CreateContact({ currentUser }) {
       </Link>
 
       <form className="flex items-end justify-between">
-        <label
-          ref={avatarRef}
-          htmlFor="image"
-          className="grid w-40 h-40 bg-cover rounded-full place-items-center"
-          style={{ backgroundImage: "url(no_avatar.jpg)" }}
-        >
-          <FontAwesomeIcon
-            icon={faCamera}
-            size="2x"
-            className="text-gray-300"
-          />
-          <input
-            type="file"
-            accept="image/*"
-            id="image"
-            className="hidden input"
-            onChange={(e) => {
-              setUserImage(e.target.files[0]);
-            }}
-          />
-        </label>
+        <ImageSetter
+          avatarFile={avatarFile}
+          setAvatarFile={setAvatarFile}
+          defaultImage={newContact.imageURL}
+        />
         <button className="btn" type="submit" onClick={addContactToDB}>
           SAVE
           {loading && (

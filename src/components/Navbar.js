@@ -1,15 +1,16 @@
-import { getAuth } from "@firebase/auth";
-import React, { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
-import Search from "./Search";
-import logo from "../images/logo.png";
+import { getAuth } from '@firebase/auth';
+import React, { useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
+import Search from './Search';
+import logo from '../images/logo.png';
 
 export default function Navbar({ setContacts, contacts }) {
   const [user, setUser] = useState(false);
   useEffect(() => {
     getAuth().onAuthStateChanged((user) => {
-      if (user) setUser(user);
-      else setUser(false);
+      if (user) {
+        setUser(user);
+      } else setUser(false);
     });
   });
 
@@ -21,9 +22,13 @@ export default function Navbar({ setContacts, contacts }) {
       <nav className="flex items-center justify-between w-full h-20 max-w-screen-lg px-4 mx-auto space-x-2">
         <div className="flex items-center space-x-4">
           <Link to="/" className="flex items-center space-x-2">
-            <img src={logo} className="hidden sm:block" alt="" />
+            <img
+              src={user.photoURL || logo}
+              className="hidden sm:block"
+              alt=""
+            />
             <span className="hidden text-xl text-gray-700 sm:block">
-              Contacts
+              {user.displayName}
             </span>
           </Link>
         </div>

@@ -1,8 +1,9 @@
-import { deleteDoc, doc } from "@firebase/firestore";
-import React, { useState } from "react";
-import { useHistory } from "react-router";
-import { db } from "../firebase/firebase";
-import ClickAway from "../helpers/ClickAway";
+import { deleteDoc, doc } from '@firebase/firestore';
+import { deleteObject, getStorage, ref } from '@firebase/storage';
+import React, { useState } from 'react';
+import { useHistory } from 'react-router';
+import { db } from '../firebase/firebase';
+import ClickAway from '../helpers/ClickAway';
 
 export default function ContactOptions({
   reverseMenu = false,
@@ -24,9 +25,14 @@ export default function ContactOptions({
 
     setDeleteModal(false);
     await deleteDoc(
-      doc(db, "contactsApp/userContacts", currentUser?.email, docId)
+      doc(db, 'contactsApp/userContacts', currentUser?.email, docId),
     );
-    history.push("/");
+    const storage = getStorage();
+    const avatarRef = ref(storage, `${currentUser.email}/${docId}`);
+    deleteObject(avatarRef).catch((err) => {
+      console.log('Error deleting the userImage from storage');
+    });
+    history.push('/');
   }
 
   if (deleteModal)
@@ -56,7 +62,7 @@ export default function ContactOptions({
     <ClickAway setOption={setOptionsOpen}>
       <div
         className={`bg-gray-50 rounded-md shadow-md py-2 absolute right-5 ${
-          reverseMenu ? "-top-24" : "top-10"
+          reverseMenu ? '-top-24' : 'top-10'
         } z-10`}
       >
         <ul>
