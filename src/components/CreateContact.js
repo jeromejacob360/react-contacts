@@ -1,5 +1,5 @@
 import { doc, setDoc } from '@firebase/firestore';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useHistory, useLocation, useParams } from 'react-router';
 import { db } from '../firebase/firebase';
 import { firestoreAutoId } from '../helpers/firestoreIdGenerator';
@@ -9,7 +9,6 @@ import { faWindowClose, faSpinner } from '@fortawesome/free-solid-svg-icons';
 import { Link } from 'react-router-dom';
 import { deleteImage, uploadImage } from '../helpers/uploadImage';
 import ImageSetter from './ImageSetter';
-import { getStorage, ref, deleteObject } from 'firebase/storage';
 
 const initialState = {
   imageURL: '',
