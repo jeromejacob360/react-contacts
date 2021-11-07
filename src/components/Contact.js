@@ -51,7 +51,7 @@ export default function Contact({ contact, currentUser }) {
       </div>
       <div className="absolute flex items-center h-full pl-2 opacity-0 right-4 group-hover:opacity-100">
         <span
-          onClick={(e) => starContact(e, contact)}
+          onClick={(e) => starContact(e)}
           className="flex items-center h-full pl-8 pr-4 bg-gradient-to-r from-transparent to-indigo-50"
         >
           <FontAwesomeIcon

@@ -37,7 +37,7 @@ export default function ContactOptions({
 
   if (deleteModal)
     return (
-      <div className="fixed inset-0 z-10 grid w-screen h-screen bg-black place-items-center bg-opacity-10 MODAL">
+      <div className="fixed inset-0 z-10 grid w-screen h-screen bg-black place-items-center bg-opacity-10 MODAL no-print">
         <ClickAway setOption={setDeleteModal}>
           <div className="p-4 bg-white border rounded-md shadow-md w-96 MODAL">
             <div className="MODAL">Delete this contact?</div>
@@ -61,17 +61,11 @@ export default function ContactOptions({
   return (
     <ClickAway setOption={setOptionsOpen}>
       <div
-        className={`bg-gray-50 rounded-md shadow-md py-2 absolute right-5 ${
+        className={`bg-gray-50 rounded-md shadow-md py-2 absolute right-5 no-print ${
           reverseMenu ? '-top-24' : 'top-10'
         } z-10`}
       >
         <ul>
-          <li className="px-10">
-            <span>Print</span>
-          </li>
-          <li className="px-10">
-            <span>Export</span>
-          </li>
           <li className="px-10" onClick={deleteContactModal}>
             <span>Delete</span>
           </li>

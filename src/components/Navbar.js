@@ -6,13 +6,15 @@ import logo from '../images/logo.png';
 
 export default function Navbar({ setContacts, contacts }) {
   const [user, setUser] = useState(false);
+
   useEffect(() => {
     getAuth().onAuthStateChanged((user) => {
       if (user) {
         setUser(user);
+        console.log(`user`, user);
       } else setUser(false);
     });
-  });
+  }, []);
 
   async function signout() {
     await getAuth().signOut();
@@ -23,8 +25,8 @@ export default function Navbar({ setContacts, contacts }) {
         <div className="flex items-center space-x-4">
           <Link to="/" className="flex items-center space-x-2">
             <img
-              src={user.photoURL || logo}
-              className="hidden sm:block"
+              src={logo} //TODO add user DP here
+              className="hidden object-cover w-16 h-16 rounded-full sm:block"
               alt=""
             />
             <span className="hidden text-xl text-gray-700 sm:block">

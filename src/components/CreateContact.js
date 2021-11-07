@@ -53,18 +53,17 @@ export default function CreateContact({ currentUser }) {
 
   async function addContactToDB(e) {
     e.preventDefault();
+
     if (currentUser)
       if (newContact.email) {
-        const docId = id || firestoreAutoId();
+        const docId = id || newContact.email;
+        console.log(`docId`, docId);
         // add contact to firestore
         setLoading(true);
         try {
           await setDoc(
             doc(db, 'contactsApp/userContacts', currentUser.email, docId),
-            {
-              ...newContact,
-              docId,
-            },
+            { ...newContact, docId },
           );
           setLoading(false);
 

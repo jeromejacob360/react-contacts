@@ -26,3 +26,20 @@ svg:hover {
 ul li {
   @apply px-4 py-1 bg-gray-50 hover:bg-gray-200;
 }
+
+@media print {
+  * {
+    box-shadow: none !important;
+    text-shadow: none !important;
+    color: black !important;
+    background-color: white !important;
+    border-color: black !important;
+  }
+  img {
+    display: none !important;
+  }
+
+  .no-print {
+    display: none !important;
+  }
+}

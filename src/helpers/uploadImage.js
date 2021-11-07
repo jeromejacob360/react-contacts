@@ -1,3 +1,4 @@
+import { getAuth, updateProfile } from '@firebase/auth';
 import { doc, setDoc } from '@firebase/firestore';
 import {
   deleteObject,
@@ -23,13 +24,23 @@ export function uploadImage(image, storageLocation, dbLocation) {
         console.log(`error`, error);
       },
       () => {
-        getDownloadURL(uploadTask.snapshot.ref).then(async (downloadURL) => {
-          await setDoc(
-            doc(db, dbLocation),
-            { imageURL: downloadURL },
-            { merge: true },
-          );
-        });
+        getDownloadURL(uploadTask.snapshot.ref)
+          .then(async (downloadURL) => {
+            await setDoc(
+              doc(db, dbLocation),
+              { imageURL: downloadURL },
+              { merge: true },
+            );
+
+            console.log(`downloadURL`, downloadURL);
+
+            await updateProfile(getAuth().currentUser, {
+              photoURL: downloadURL,
+            });
+          })
+          .catch((error) => {
+            console.log(`error`, error);
+          });
       },
     );
   } catch (error) {

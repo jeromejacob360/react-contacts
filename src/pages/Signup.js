@@ -33,17 +33,22 @@ export default function Signup() {
     const auth = getAuth();
     const dbLocation = `contactsApp/userDetails/placeHolder/${user.email}`;
 
-    if (avatarFile)
+    if (avatarFile) {
       uploadImage(avatarFile, `userDPs/${user.email}`, dbLocation);
+    }
 
     try {
-      await createUserWithEmailAndPassword(auth, user.email, user.password);
-      await setDoc(doc(db, 'contactsApp/userDetails/placeHolder', user.email), {
+      const newContact = {
         firstName: user.firstName,
         surName: user.surName,
         email: user.email,
-      });
-      setUser(initialState);
+      };
+      await createUserWithEmailAndPassword(auth, user.email, user.password);
+      await setDoc(
+        doc(db, 'contactsApp/userDetails/placeHolder', user.email),
+        newContact,
+      );
+      // setUser(initialState);
 
       setTimeout(async () => {
         await updateProfile(getAuth().currentUser, {

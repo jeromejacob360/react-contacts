@@ -1,18 +1,18 @@
-import { doc, onSnapshot, setDoc } from "@firebase/firestore";
-import React, { useEffect, useState } from "react";
-import { useParams } from "react-router";
-import { db } from "../firebase/firebase";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { doc, onSnapshot, setDoc } from '@firebase/firestore';
+import React, { useEffect, useState } from 'react';
+import { useParams } from 'react-router';
+import { db } from '../firebase/firebase';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
   faEnvelope,
   faPhone,
   faStar,
   faEllipsisV,
   faArrowLeft,
-} from "@fortawesome/free-solid-svg-icons";
-import { Link } from "react-router-dom";
-import ContactOptions from "./ContactOptions";
-import no_avatar from "../images/no_avatar.jpg";
+} from '@fortawesome/free-solid-svg-icons';
+import { Link } from 'react-router-dom';
+import ContactOptions from './ContactOptions';
+import no_avatar from '../images/no_avatar.jpg';
 
 export default function ContactDetails({ currentUser }) {
   const [contact, setContact] = useState({});
@@ -24,21 +24,21 @@ export default function ContactDetails({ currentUser }) {
     let unsub;
     if (currentUser?.email)
       unsub = onSnapshot(
-        doc(db, "contactsApp/userContacts", currentUser?.email, id),
+        doc(db, 'contactsApp/userContacts', currentUser?.email, id),
         (doc) => {
           setContact(doc.data());
-        }
+        },
       );
     return unsub;
   }, [currentUser?.email, id]);
 
   async function starContact(e) {
     await setDoc(
-      doc(db, "contactsApp/userContacts", currentUser.email, contact?.docId),
+      doc(db, 'contactsApp/userContacts', currentUser.email, contact?.docId),
       {
         starred: !contact?.starred,
       },
-      { merge: true }
+      { merge: true },
     );
   }
 
@@ -65,7 +65,7 @@ export default function ContactDetails({ currentUser }) {
             icon={faStar}
             onClick={starContact}
             className={`${
-              contact?.starred ? "text-yellow-400" : "text-gray-400"
+              contact?.starred ? 'text-yellow-400' : 'text-gray-400'
             }`}
           />
 
@@ -80,7 +80,7 @@ export default function ContactDetails({ currentUser }) {
             )}
           </div>
           <Link
-            to={{ pathname: "/person/edit/" + contact?.docId, state: contact }}
+            to={{ pathname: '/person/edit/' + contact?.email, state: contact }}
           >
             <button className="px-3 border-2 border-indigo-600 rounded-md">
               Edit

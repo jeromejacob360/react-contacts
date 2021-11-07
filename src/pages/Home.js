@@ -1,8 +1,8 @@
-import React from "react";
-import { Link } from "react-router-dom";
-import Contact from "../components/Contact";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faPlus } from "@fortawesome/free-solid-svg-icons";
+import React from 'react';
+import { Link } from 'react-router-dom';
+import Contact from '../components/Contact';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faPlus } from '@fortawesome/free-solid-svg-icons';
 
 export default function Home({ contacts, currentUser }) {
   if (contacts.length === 0) {
@@ -36,7 +36,11 @@ export default function Home({ contacts, currentUser }) {
         to="/new"
         className="fixed grid w-16 h-16 text-white bg-indigo-600 rounded-full shadow-md place-items-center bottom-10 right-10"
       >
-        <FontAwesomeIcon icon={faPlus} size="2x" className="text-white" />
+        <FontAwesomeIcon
+          icon={faPlus}
+          size="2x"
+          className="text-white no-print"
+        />
       </Link>
     </>
   );
