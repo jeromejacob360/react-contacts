@@ -11,7 +11,6 @@ export default function Navbar({ setContacts, contacts }) {
     getAuth().onAuthStateChanged((user) => {
       if (user) {
         setUser(user);
-        console.log(`user`, user);
       } else setUser(false);
     });
   }, []);

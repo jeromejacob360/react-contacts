@@ -2,7 +2,6 @@ import { doc, setDoc } from '@firebase/firestore';
 import { useEffect, useState } from 'react';
 import { useHistory, useLocation, useParams } from 'react-router';
 import { db } from '../firebase/firebase';
-import { firestoreAutoId } from '../helpers/firestoreIdGenerator';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faWindowClose, faSpinner } from '@fortawesome/free-solid-svg-icons';
