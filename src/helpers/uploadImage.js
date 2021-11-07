@@ -1,4 +1,3 @@
-import { getAuth, updateProfile } from '@firebase/auth';
 import { doc, setDoc } from '@firebase/firestore';
 import {
   deleteObject,
@@ -26,17 +25,18 @@ export function uploadImage(image, storageLocation, dbLocation) {
       () => {
         getDownloadURL(uploadTask.snapshot.ref)
           .then(async (downloadURL) => {
+            console.log(`downloadURL`, downloadURL);
+            console.log('SETTING...');
             await setDoc(
               doc(db, dbLocation),
               { imageURL: downloadURL },
               { merge: true },
             );
+            console.log('SET!!');
 
-            console.log(`downloadURL`, downloadURL);
-
-            await updateProfile(getAuth().currentUser, {
-              photoURL: downloadURL,
-            });
+            // await updateProfile(getAuth().currentUser, {
+            //   photoURL: downloadURL,
+            // });
           })
           .catch((error) => {
             console.log(`error`, error);

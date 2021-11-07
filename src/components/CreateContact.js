@@ -1,5 +1,5 @@
 import { doc, setDoc } from '@firebase/firestore';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useHistory, useLocation, useParams } from 'react-router';
 import { db } from '../firebase/firebase';
 
@@ -24,6 +24,8 @@ export default function CreateContact({ currentUser }) {
   const [avatarFile, setAvatarFile] = useState(null);
   const [loading, setLoading] = useState(false);
 
+  const firstNameRef = useRef();
+
   const history = useHistory();
   const { id } = useParams();
 
@@ -34,9 +36,15 @@ export default function CreateContact({ currentUser }) {
     if (existingContact) setNewContact(existingContact);
   }, [existingContact]);
 
+  // if it is a redirect from WA, grab the email from URL
   useEffect(() => {
     if (id) setNewContact((prev) => ({ ...prev, email: id }));
   }, [id]);
+
+  // focus on first name
+  useEffect(() => {
+    firstNameRef.current.focus();
+  }, []);
 
   //for updating input fields
   function setvalue(e) {
@@ -60,10 +68,11 @@ export default function CreateContact({ currentUser }) {
     if (currentUser)
       if (newContact.email) {
         const docId = id || newContact.email;
-        console.log(`docId`, docId);
         // add contact to firestore
         setLoading(true);
         try {
+          newContact.imageURL = '';
+
           await setDoc(
             doc(db, 'contactsApp/userContacts', currentUser.email, docId),
             { ...newContact, docId },
@@ -119,6 +128,7 @@ export default function CreateContact({ currentUser }) {
         name="firstName"
         value={newContact?.firstName}
         onChange={setvalue}
+        ref={firstNameRef}
       />
       <input
         className="input"
