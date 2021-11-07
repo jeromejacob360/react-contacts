@@ -34,6 +34,10 @@ export default function CreateContact({ currentUser }) {
     if (existingContact) setNewContact(existingContact);
   }, [existingContact]);
 
+  useEffect(() => {
+    if (id) setNewContact((prev) => ({ ...prev, email: id }));
+  }, [id]);
+
   //for updating input fields
   function setvalue(e) {
     setNewContact((prev) => ({

@@ -14,7 +14,7 @@ export default function Home({ contacts, currentUser }) {
           You don't have any contacts yet..!
         </div>
       ) : (
-        <div className="max-w-screen-lg px-4 pb-4 mx-auto space-y-4 border-indigo-600 rounded-md shadow-lg">
+        <div className="max-w-screen-lg px-4 pb-4 mx-auto space-y-4 border-indigo-600 rounded-md shadow-md">
           <div className="flex justify-between pl-2 my-4 border-b border-blue-500 sm:pl-12">
             <div className="grid items-center flex-1 grid-cols-2 mx-5 my-2 space-x-2 sm:grid-cols-3 md:grid-cols-4">
               <h4>Name</h4>

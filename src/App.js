@@ -74,7 +74,7 @@ function App() {
             )}
           </Route>
 
-          <Route exact path="/person/edit/:id">
+          <Route path="/person/edit/:id">
             {currentUser ? (
               <CreateContact currentUser={currentUser} />
             ) : (
