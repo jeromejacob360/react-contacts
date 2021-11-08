@@ -1,23 +1,11 @@
 import { faCamera } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useRef } from 'react';
 import no_avatar from '../images/no_avatar.jpg';
 import Resizer from 'react-image-file-resizer';
 
-export default function ImageSetter({
-  defaultImage,
-  avatarFile,
-  setAvatarFile,
-}) {
-  const [avatarUrl, setAvatarUrl] = useState('');
-
+export default function ImageSetter({ avatarFile, setAvatarFile }) {
   const fileRef = useRef();
-
-  useEffect(() => {
-    if (defaultImage) {
-      setAvatarUrl(defaultImage);
-    }
-  }, [defaultImage]);
 
   function resizeImage(imageFile) {
     return new Promise((resolve) => {

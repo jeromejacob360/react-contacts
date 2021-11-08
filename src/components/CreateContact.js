@@ -74,7 +74,7 @@ export default function CreateContact({ currentUser }) {
         // add contact to firestore
         setLoading(true);
         try {
-          newContact.imageURL = '';
+          if (!existingContact) newContact.imageURL = '';
 
           await setDoc(
             doc(db, 'contactsApp/userContacts', currentUser.email, docId),
