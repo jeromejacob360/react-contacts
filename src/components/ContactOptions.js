@@ -1,5 +1,10 @@
 import { deleteDoc, doc } from '@firebase/firestore';
-import { deleteObject, getStorage, ref } from '@firebase/storage';
+import {
+  deleteObject,
+  getStorage,
+  ref,
+  getDownloadURL,
+} from '@firebase/storage';
 import React, { useState } from 'react';
 import { useHistory } from 'react-router';
 import { db } from '../firebase/firebase';
@@ -7,7 +12,7 @@ import ClickAway from '../helpers/ClickAway';
 
 export default function ContactOptions({
   reverseMenu = false,
-  docId,
+  email,
   setOptionsOpen,
   currentUser,
 }) {
@@ -25,13 +30,19 @@ export default function ContactOptions({
 
     setDeleteModal(false);
     await deleteDoc(
-      doc(db, 'contactsApp/userContacts', currentUser?.email, docId),
+      doc(db, 'contactsApp/userContacts', `${currentUser.email}/${email}`),
     );
     const storage = getStorage();
-    const avatarRef = ref(storage, `${currentUser.email}/${docId}`);
-    deleteObject(avatarRef).catch((err) => {
-      console.log('Error deleting the userImage from storage');
-    });
+    const avatarRef = ref(storage, `${currentUser.email}/${email}`);
+    getDownloadURL(avatarRef)
+      .then(async (url) => {
+        if (url) {
+          await deleteObject(avatarRef);
+        }
+      })
+      .catch(() => {
+        console.log("Contact didn't have avatar to delete");
+      });
     history.push('/');
   }
 

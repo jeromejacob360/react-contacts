@@ -33,7 +33,10 @@ export default function CreateContact({ currentUser }) {
 
   // populate the fields
   useEffect(() => {
-    if (existingContact) setNewContact(existingContact);
+    if (existingContact) {
+      setNewContact(existingContact);
+      setAvatarFile(existingContact.imageURL);
+    }
   }, [existingContact]);
 
   // if it is a redirect from WA, grab the email from URL
@@ -57,8 +60,8 @@ export default function CreateContact({ currentUser }) {
   //sets up preview of the chosen image
   useEffect(() => {
     if (avatarFile) {
-      const url = URL.createObjectURL(avatarFile);
-      setNewContact((prev) => ({ ...prev, imageURL: url }));
+      // avatarFile is now base64 uri
+      setNewContact((prev) => ({ ...prev, imageURL: avatarFile }));
     }
   }, [avatarFile]);
 

@@ -17,7 +17,6 @@ import no_avatar from '../images/no_avatar.jpg';
 export default function ContactDetails({ currentUser }) {
   const [contact, setContact] = useState({});
   const [openOptions, setOpenOptions] = useState(false);
-
   const { id } = useParams();
 
   useEffect(() => {
@@ -75,7 +74,7 @@ export default function ContactDetails({ currentUser }) {
               <ContactOptions
                 currentUser={currentUser}
                 setOptionsOpen={setOpenOptions}
-                docId={contact?.docId}
+                email={contact?.email}
               />
             )}
           </div>

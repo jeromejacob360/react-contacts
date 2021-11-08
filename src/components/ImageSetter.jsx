@@ -1,7 +1,8 @@
 import { faCamera } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import no_avatar from '../images/no_avatar.jpg';
+import Resizer from 'react-image-file-resizer';
 
 export default function ImageSetter({
   defaultImage,
@@ -10,13 +11,7 @@ export default function ImageSetter({
 }) {
   const [avatarUrl, setAvatarUrl] = useState('');
 
-  useEffect(() => {
-    if (avatarFile) {
-      setAvatarUrl(URL.createObjectURL(avatarFile));
-    } else {
-      setAvatarUrl(null);
-    }
-  }, [avatarFile]);
+  const fileRef = useRef();
 
   useEffect(() => {
     if (defaultImage) {
@@ -24,9 +19,32 @@ export default function ImageSetter({
     }
   }, [defaultImage]);
 
+  function resizeImage(imageFile) {
+    return new Promise((resolve) => {
+      Resizer.imageFileResizer(
+        imageFile,
+        300,
+        300,
+        'JPEG',
+        100,
+        0,
+        (uri) => {
+          resolve(uri);
+        },
+        'base64',
+      );
+    });
+  }
+
+  async function setResizedImage(imageFile) {
+    const base64uri = await resizeImage(imageFile);
+    setAvatarFile(base64uri);
+  }
+
   function removeImage(e) {
     e.preventDefault();
     setAvatarFile('');
+    fileRef.current.value = '';
   }
 
   return (
@@ -36,7 +54,7 @@ export default function ImageSetter({
           htmlFor="image"
           className="grid w-32 h-32 mx-auto my-2 bg-cover rounded-full place-items-center"
           style={{
-            backgroundImage: `url(${avatarUrl || no_avatar})`,
+            backgroundImage: `url(${avatarFile || no_avatar})`,
             backgroundSize: 'cover',
           }}
         >
@@ -46,16 +64,17 @@ export default function ImageSetter({
             className="text-gray-300"
           />
           <input
+            ref={fileRef}
             type="file"
             accept="image/*"
             id="image"
             className="hidden input"
             onChange={(e) => {
-              setAvatarFile(e.target.files[0]);
+              setResizedImage(e.target.files[0]);
             }}
           />
         </label>
-        {avatarUrl && (
+        {avatarFile && (
           <button onClick={removeImage} className="text-xs btn">
             Remove image
           </button>

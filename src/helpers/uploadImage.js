@@ -4,7 +4,7 @@ import {
   getDownloadURL,
   getStorage,
   ref,
-  uploadBytesResumable,
+  uploadString,
 } from '@firebase/storage';
 import { db } from '../firebase/firebase';
 
@@ -13,49 +13,37 @@ export function uploadImage(image, storageLocation, dbLocation) {
     const storage = getStorage();
     const storageRef = ref(storage, storageLocation);
 
-    const uploadTask = uploadBytesResumable(storageRef, image);
-
-    uploadTask.on(
-      'state_changed',
-      () => {},
-      (error) => {
-        console.log('IMAGE UPLOAD FAILED');
-        console.log(`error`, error);
-      },
-      () => {
-        getDownloadURL(uploadTask.snapshot.ref)
-          .then(async (downloadURL) => {
-            console.log(`downloadURL`, downloadURL);
-            console.log('SETTING...');
-            await setDoc(
-              doc(db, dbLocation),
-              { imageURL: downloadURL },
-              { merge: true },
-            );
-            console.log('SET!!');
-
-            // await updateProfile(getAuth().currentUser, {
-            //   photoURL: downloadURL,
-            // });
-          })
-          .catch((error) => {
-            console.log(`error`, error);
-          });
-      },
-    );
+    uploadString(storageRef, image.split(',')[1], 'base64', {
+      contentType: 'image/png',
+    }).then(() => {
+      getDownloadURL(ref(storage, storageLocation))
+        .then(async (downloadURL) => {
+          await setDoc(
+            doc(db, dbLocation),
+            { imageURL: downloadURL },
+            { merge: true },
+          );
+        })
+        .catch((error) => {
+          console.log(`error`, error);
+        });
+    });
   } catch (error) {
-    console.log(`error`, error);
+    console.log(`error in uploading to storage`, error);
   }
 }
 
 export function deleteImage(storageLocation, dbLocation) {
   const storage = getStorage();
   const avatarRef = ref(storage, storageLocation);
-  deleteObject(avatarRef)
+
+  // verify that the image exists
+  getDownloadURL(avatarRef)
     .then(async () => {
+      await deleteObject(avatarRef);
       await setDoc(doc(db, dbLocation), { imageURL: '' }, { merge: true });
     })
-    .catch((err) => {
-      console.log(err);
+    .catch(() => {
+      console.log('No avatar to delete');
     });
 }
