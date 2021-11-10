@@ -45,6 +45,17 @@ export default function ContactDetails({ currentUser }) {
     setOpenOptions(true);
   }
 
+  function askCamera() {
+    navigator.mediaDevices
+      .getUserMedia()
+      .then((stream) => {
+        console.log(stream);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  }
+
   return (
     <div className="max-w-screen-md px-4 mx-auto">
       <Link to="/">
@@ -101,6 +112,12 @@ export default function ContactDetails({ currentUser }) {
           </div>
         </address>
       </div>
+      <button
+        onClick={askCamera}
+        className="px-4 py-1 border border-blue-600 rounded-md shadow-sm"
+      >
+        Ask for camera access
+      </button>
     </div>
   );
 }
