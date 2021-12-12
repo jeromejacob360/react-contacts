@@ -3,9 +3,9 @@ import React, { useState } from 'react';
 import { useHistory } from 'react-router';
 import { db } from '../firebase/firebase';
 import ContactOptions from './ContactOptions';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faEllipsisV, faStar } from '@fortawesome/free-solid-svg-icons';
 import no_avatar from '../images/no_avatar.jpg';
+import { FaEllipsisV } from 'react-icons/fa';
+import { AiFillStar } from 'react-icons/ai';
 
 export default function Contact({ contact, currentUser }) {
   const [optionsOpen, setOptionsOpen] = useState(false);
@@ -54,8 +54,8 @@ export default function Contact({ contact, currentUser }) {
           onClick={(e) => starContact(e)}
           className="flex items-center h-full pl-8 pr-4 bg-gradient-to-r from-transparent to-indigo-50"
         >
-          <FontAwesomeIcon
-            icon={faStar}
+          <AiFillStar
+            size={30}
             className={`${
               contact.starred ? 'text-yellow-400' : 'text-gray-400'
             }`}
@@ -63,7 +63,7 @@ export default function Contact({ contact, currentUser }) {
         </span>
         <div className="flex items-center h-full bg-indigo-50">
           <span className="px-4" onClick={menuReverser}>
-            <FontAwesomeIcon icon={faEllipsisV} />
+            <FaEllipsisV />
           </span>
         </div>
       </div>

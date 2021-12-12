@@ -17,8 +17,9 @@ import PageNotFound from './pages/PageNotFound';
 
 function App() {
   const [contactsBackup, setContactsBackup] = useState([]);
-  const [contacts, setContacts] = useState([]);
+  const [contacts, setContacts] = useState(['']);
   const [currentUser, setCurrentUser] = useState({});
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     getAuth().onAuthStateChanged((currentUser) => {
@@ -30,12 +31,16 @@ function App() {
     });
   }, []);
 
-  useContacts(setContactsBackup, setContacts, currentUser);
+  useContacts(setContactsBackup, setContacts, currentUser, setLoading);
 
   return (
     <>
       <Router>
-        <Navbar setContacts={setContacts} contacts={contactsBackup} />
+        <Navbar
+          loading={loading}
+          setContacts={setContacts}
+          contacts={contactsBackup}
+        />
         <Switch>
           <Route exact path="/">
             {currentUser ? (
@@ -44,6 +49,8 @@ function App() {
                 contacts={contacts}
                 setContacts={setContacts}
                 contactsBackup={contactsBackup}
+                setLoading={setLoading}
+                loading={loading}
               />
             ) : (
               <Redirect to="/signin" />
@@ -51,7 +58,11 @@ function App() {
           </Route>
 
           <Route exact path="/signin">
-            {currentUser ? <Redirect to="/" /> : <Signin />}
+            {currentUser ? (
+              <Redirect to="/" />
+            ) : (
+              <Signin setLoading={setLoading} />
+            )}
           </Route>
 
           <Route exact path="/signup">
@@ -62,7 +73,7 @@ function App() {
             {currentUser ? (
               <CreateContact currentUser={currentUser} />
             ) : (
-              <Signin />
+              <Signin setLoading={setLoading} />
             )}
           </Route>
 
@@ -70,7 +81,7 @@ function App() {
             {currentUser ? (
               <ContactDetails currentUser={currentUser} />
             ) : (
-              <Signin />
+              <Signin setLoading={setLoading} />
             )}
           </Route>
 
@@ -78,7 +89,7 @@ function App() {
             {currentUser ? (
               <CreateContact currentUser={currentUser} />
             ) : (
-              <Signin />
+              <Signin setLoading={setLoading} />
             )}
           </Route>
 

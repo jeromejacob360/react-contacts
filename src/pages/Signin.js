@@ -1,23 +1,27 @@
-import { getAuth, signInWithEmailAndPassword } from "@firebase/auth";
-import React, { useState } from "react";
-import { useHistory } from "react-router";
-import { Link } from "react-router-dom";
+import { getAuth, signInWithEmailAndPassword } from '@firebase/auth';
+import React, { useState } from 'react';
+import { useHistory } from 'react-router';
+import { Link } from 'react-router-dom';
 
-export default function Signin() {
+export default function Signin({ setLoading }) {
   const [user, setUser] = useState({
-    email: "",
-    password: "",
+    email: '',
+    password: '',
   });
+  const [error, setError] = useState(false);
   const history = useHistory();
 
   async function signinUser(e) {
     e.preventDefault();
     try {
+      setLoading(true);
+      setError(false);
       await signInWithEmailAndPassword(getAuth(), user.email, user.password);
-      console.log("SIGNED IN");
-      history.push("/");
+      console.log('SIGNED IN');
+      history.push('/');
     } catch (error) {
-      console.log(`error`, error);
+      setLoading(false);
+      setError(true);
     }
   }
 
@@ -27,8 +31,8 @@ export default function Signin() {
         <h1 className="px-1 my-6 text-4xl text-indigo-600">Sign in</h1>
         <form action="" className="flex flex-col space-y-4">
           <input
-            className="input"
-            type="text"
+            className={`input ${error ? 'border-red-600' : ''}`}
+            type="email"
             value={user.email}
             placeholder="Email"
             name="email"
@@ -37,7 +41,7 @@ export default function Signin() {
             }
           />
           <input
-            className="input"
+            className={`input ${error ? 'border-red-600' : ''}`}
             type="password"
             value={user.password}
             placeholder="Password"

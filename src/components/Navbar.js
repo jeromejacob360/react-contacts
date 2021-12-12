@@ -3,8 +3,9 @@ import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import Search from './Search';
 import logo from '../images/logo.png';
+import { ImSpinner2 } from 'react-icons/im';
 
-export default function Navbar({ setContacts, contacts }) {
+export default function Navbar({ setContacts, contacts, loading }) {
   const [user, setUser] = useState(false);
 
   useEffect(() => {
@@ -19,15 +20,22 @@ export default function Navbar({ setContacts, contacts }) {
     await getAuth().signOut();
   }
   return (
-    <section className="w-screen h-20 mb-10 shadow-md">
+    <section className="w-screen h-20 fixed top-0 bg-white shadow-md">
       <nav className="flex items-center justify-between w-full h-20 max-w-screen-lg px-4 mx-auto space-x-2">
-        <div className="flex items-center space-x-4">
-          <Link to="/" className="flex items-center space-x-2">
+        <div className="hidden sm:flex items-center space-x-4">
+          <Link to="/" className="flex items-center space-x-2 relative">
             <img
               src={logo} //TODO add user DP here
-              className="hidden object-cover w-16 h-16 rounded-full sm:block"
+              className="object-cover w-16 h-16 rounded-full"
               alt=""
             />
+            {loading && (
+              <ImSpinner2
+                size={68}
+                className="hidden sm:block absolute animate-spin text-red-700"
+                style={{ left: '-.65rem', top: '-.15rem' }}
+              />
+            )}
             <span className="hidden text-xl text-gray-700 sm:block">
               {user.displayName}
             </span>

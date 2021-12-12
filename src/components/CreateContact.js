@@ -2,12 +2,11 @@ import { doc, setDoc } from '@firebase/firestore';
 import { useEffect, useRef, useState } from 'react';
 import { useHistory, useLocation, useParams } from 'react-router';
 import { db } from '../firebase/firebase';
-
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faWindowClose, faSpinner } from '@fortawesome/free-solid-svg-icons';
 import { Link } from 'react-router-dom';
 import { deleteImage, uploadImage } from '../helpers/uploadImage';
 import ImageSetter from './ImageSetter';
+import { ImSpinner10 } from 'react-icons/im';
+import { AiOutlineCloseCircle } from 'react-icons/ai';
 
 const initialState = {
   imageURL: '',
@@ -101,9 +100,9 @@ export default function CreateContact({ currentUser }) {
   }
 
   return (
-    <div className="flex flex-col max-w-screen-sm mx-auto space-y-2">
+    <div className="flex mt-28 flex-col max-w-screen-sm mx-auto space-y-2 px-4">
       <Link to="/">
-        <FontAwesomeIcon icon={faWindowClose} className={`text-indigo-600`} />
+        <AiOutlineCloseCircle size={30} className={`text-indigo-600`} />
       </Link>
 
       <form className="flex items-end justify-between">
@@ -114,13 +113,7 @@ export default function CreateContact({ currentUser }) {
         />
         <button className="btn" type="submit" onClick={addContactToDB}>
           SAVE
-          {loading && (
-            <FontAwesomeIcon
-              icon={faSpinner}
-              pulse
-              className="ml-2 text-white"
-            />
-          )}
+          {loading && <ImSpinner10 className="animate-spin" />}
         </button>
       </form>
       <input

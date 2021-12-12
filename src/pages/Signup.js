@@ -24,11 +24,22 @@ const initialState = {
 export default function Signup() {
   const [user, setUser] = useState(initialState);
   const [avatarFile, setAvatarFile] = useState(null);
+  const [error, setError] = useState('');
 
   const history = useHistory();
 
   async function createUser(e) {
     e.preventDefault();
+    setError('');
+    const { email, password, firstName } = user;
+    if (!email || !password || !firstName) {
+      setError('Please fill in all fields');
+      return;
+    }
+    if (password.length < 6) {
+      setError('Password must be at least 6 characters long');
+      return;
+    }
 
     const auth = getAuth();
     const dbLocation = `contactsApp/userDetails/placeHolder/${user.email}`;
@@ -64,13 +75,20 @@ export default function Signup() {
   return (
     <main className="max-w-screen-sm px-2 mx-auto mt-20">
       <div className="px-6 pb-6 border-2 border-indigo-600 rounded-md">
-        <form action="" className="flex flex-col space-y-4">
+        <form action="" className="flex flex-col space-y-4 relative">
           <div className="flex items-center justify-between">
             <div className="flex flex-col flex-1 space-y-4">
               <h1 className="px-1 my-4 text-4xl text-indigo-600">Sign up</h1>
+              <div className="block sm:hidden">
+                <ImageSetter
+                  avatarFile={avatarFile}
+                  setAvatarFile={setAvatarFile}
+                />
+              </div>
               <input
                 className="input"
                 type="text"
+                autoComplete="off"
                 value={user.firstName}
                 placeholder="First name"
                 name="firstName"
@@ -81,6 +99,7 @@ export default function Signup() {
               <input
                 className="input"
                 type="text"
+                autoComplete="off"
                 value={user.surName}
                 placeholder="Last name"
                 name="surName"
@@ -89,14 +108,17 @@ export default function Signup() {
                 }
               />
             </div>
-            <ImageSetter
-              avatarFile={avatarFile}
-              setAvatarFile={setAvatarFile}
-            />
+            <div className="sm:block hidden">
+              <ImageSetter
+                avatarFile={avatarFile}
+                setAvatarFile={setAvatarFile}
+              />
+            </div>
           </div>
           <input
             className="input"
-            type="text"
+            type="email"
+            autoComplete="off"
             value={user.email}
             placeholder="Email"
             name="email"
@@ -108,7 +130,7 @@ export default function Signup() {
             className="input"
             type="password"
             value={user.password}
-            placeholder="Password"
+            placeholder="Password (min 6 characters)"
             name="password"
             onChange={(e) =>
               setUser({ ...user, [e.target.name]: e.target.value })
@@ -120,10 +142,15 @@ export default function Signup() {
             </button>
           </div>
           <Link to="/signin">
-            <div className="text-center text-indigo-600 underline cursor-pointer">
+            <div className="text-center text-indigo-600 mb-2 underline cursor-pointer">
               Sign in
             </div>
           </Link>
+          {error && (
+            <p className="text-red-600 absolute -bottom-5 left-0 right-0 text-center">
+              {error}
+            </p>
+          )}
         </form>
       </div>
     </main>

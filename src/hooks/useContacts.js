@@ -6,10 +6,12 @@ export default function useContacts(
   setContactsBackup,
   setContacts,
   currentUser,
+  setLoading,
 ) {
   useEffect(() => {
     let unsub;
     if (currentUser && currentUser.email) {
+      setLoading(true);
       const contactsRef = collection(
         db,
         'contactsApp/userContacts',
@@ -17,6 +19,13 @@ export default function useContacts(
       );
 
       unsub = onSnapshot(contactsRef, (snapshot) => {
+        if (snapshot.empty) {
+          setLoading(false);
+          setContactsBackup([]);
+          setContacts([]);
+          return;
+        }
+        setLoading(false);
         snapshot.docChanges().forEach((change) => {
           const newData = change.doc.data();
 
@@ -46,5 +55,5 @@ export default function useContacts(
       });
     }
     return unsub;
-  }, [currentUser, setContacts, setContactsBackup]);
+  }, [currentUser, setContacts, setContactsBackup, setLoading]);
 }

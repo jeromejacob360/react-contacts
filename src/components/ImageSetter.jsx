@@ -1,11 +1,15 @@
-import { faCamera } from '@fortawesome/free-solid-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { AiOutlinePlusCircle } from 'react-icons/ai';
 import React, { useRef } from 'react';
 import no_avatar from '../images/no_avatar.jpg';
 import Resizer from 'react-image-file-resizer';
+import { useLocation } from 'react-router-dom';
+import { RiEditBoxLine } from 'react-icons/ri';
 
 export default function ImageSetter({ avatarFile, setAvatarFile }) {
   const fileRef = useRef();
+  const location = useLocation();
+
+  const isEditMode = location.pathname.includes('edit');
 
   function resizeImage(imageFile) {
     return new Promise((resolve) => {
@@ -46,11 +50,14 @@ export default function ImageSetter({ avatarFile, setAvatarFile }) {
             backgroundSize: 'cover',
           }}
         >
-          <FontAwesomeIcon
-            icon={faCamera}
-            size="2x"
-            className="text-gray-300"
-          />
+          {isEditMode && avatarFile ? (
+            <RiEditBoxLine
+              size={30}
+              className="text-gray-500 bg-white rounded-xl px-1 border ml-24 mt-24"
+            />
+          ) : (
+            <AiOutlinePlusCircle size={40} className="text-gray-600" />
+          )}
           <input
             ref={fileRef}
             type="file"

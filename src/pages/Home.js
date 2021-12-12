@@ -1,20 +1,20 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import Contact from '../components/Contact';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faPlus } from '@fortawesome/free-solid-svg-icons';
+import { FaPlus } from 'react-icons/fa';
 
-export default function Home({ contacts, currentUser }) {
-  if (contacts.length === 0) {
+export default function Home({ contacts, currentUser, loading, setLoading }) {
+  if (loading) {
+    return null;
   }
   return (
-    <>
-      {contacts.length === 0 ? (
+    <div className="max-w-screen-xl mt-28 mx-auto">
+      {!loading && contacts.length === 0 ? (
         <div className="text-xl text-center text-indigo-500">
           You don't have any contacts yet..!
         </div>
       ) : (
-        <div className="max-w-screen-lg px-4 pb-4 mx-auto space-y-4 border-indigo-600 rounded-md shadow-md">
+        <div className="space-y-4 shadow-xl border m-4 p-4 border-indigo-600 rounded-md">
           <div className="flex justify-between pl-2 my-4 border-b border-blue-500 sm:pl-12">
             <div className="grid items-center flex-1 grid-cols-2 mx-5 my-2 space-x-2 sm:grid-cols-3 md:grid-cols-4">
               <h4>Name</h4>
@@ -32,16 +32,14 @@ export default function Home({ contacts, currentUser }) {
           ))}
         </div>
       )}
-      <Link
-        to="/new"
-        className="fixed grid w-16 h-16 text-white bg-indigo-600 rounded-full shadow-md place-items-center bottom-10 right-10"
-      >
-        <FontAwesomeIcon
-          icon={faPlus}
-          size="2x"
-          className="text-white no-print"
-        />
-      </Link>
-    </>
+      <div className="fixed left-0 bottom-4 flex justify-end right-4 max-w-screen-xl mx-auto">
+        <Link
+          to="/new"
+          className="text-white bg-indigo-600 rounded-full shadow-md"
+        >
+          <FaPlus size={50} className="text-white p-2" />
+        </Link>
+      </div>
+    </div>
   );
 }
