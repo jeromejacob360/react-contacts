@@ -19,7 +19,7 @@ function App() {
   const [contactsBackup, setContactsBackup] = useState([]);
   const [contacts, setContacts] = useState([]);
   const [currentUser, setCurrentUser] = useState({});
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     getAuth().onAuthStateChanged((currentUser) => {
@@ -51,7 +51,6 @@ function App() {
                 contacts={contacts}
                 setContacts={setContacts}
                 contactsBackup={contactsBackup}
-                setLoading={setLoading}
                 loading={loading}
               />
             ) : (

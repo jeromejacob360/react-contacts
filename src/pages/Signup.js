@@ -68,14 +68,21 @@ export default function Signup() {
         history.push('/');
       }, 0);
     } catch (error) {
-      console.log(`error.message`, error.message);
+      if (error.message === 'Firebase: Error (auth/email-already-in-use).') {
+        setError('Email already in use');
+      }
     }
+  }
+
+  function setValue(e) {
+    setError('');
+    setUser({ ...user, [e.target.name]: e.target.value });
   }
 
   return (
     <main className="max-w-screen-sm px-2 mx-auto mt-28">
       <div className="px-6 pb-6 border-2 border-indigo-600 rounded-md">
-        <form action="" className="flex flex-col space-y-4 relative">
+        <form action="" className="relative flex flex-col space-y-4">
           <div className="flex items-center justify-between">
             <div className="flex flex-col flex-1 space-y-4">
               <h1 className="px-1 my-4 text-4xl text-indigo-600">Sign up</h1>
@@ -92,9 +99,7 @@ export default function Signup() {
                 value={user.firstName}
                 placeholder="First name"
                 name="firstName"
-                onChange={(e) =>
-                  setUser({ ...user, [e.target.name]: e.target.value })
-                }
+                onChange={setValue}
               />
               <input
                 className="input"
@@ -103,12 +108,10 @@ export default function Signup() {
                 value={user.surName}
                 placeholder="Last name"
                 name="surName"
-                onChange={(e) =>
-                  setUser({ ...user, [e.target.name]: e.target.value })
-                }
+                onChange={setValue}
               />
             </div>
-            <div className="sm:block hidden">
+            <div className="hidden sm:block">
               <ImageSetter
                 avatarFile={avatarFile}
                 setAvatarFile={setAvatarFile}
@@ -122,9 +125,7 @@ export default function Signup() {
             value={user.email}
             placeholder="Email"
             name="email"
-            onChange={(e) =>
-              setUser({ ...user, [e.target.name]: e.target.value })
-            }
+            onChange={setValue}
           />
           <input
             className="input"
@@ -132,9 +133,7 @@ export default function Signup() {
             value={user.password}
             placeholder="Password (min 6 characters)"
             name="password"
-            onChange={(e) =>
-              setUser({ ...user, [e.target.name]: e.target.value })
-            }
+            onChange={setValue}
           />
           <div className="flex w-full space-x-4">
             <button onClick={createUser} type="submit" className="flex-1 btn">
@@ -142,12 +141,12 @@ export default function Signup() {
             </button>
           </div>
           <Link to="/signin">
-            <div className="text-center text-indigo-600 mb-2 underline cursor-pointer">
+            <div className="mb-2 text-center text-indigo-600 underline cursor-pointer">
               Sign in
             </div>
           </Link>
           {error && (
-            <p className="text-red-600 absolute -bottom-5 left-0 right-0 text-center">
+            <p className="absolute left-0 right-0 text-center text-red-600 -bottom-5">
               {error}
             </p>
           )}

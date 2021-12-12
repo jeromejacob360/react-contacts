@@ -3,18 +3,18 @@ import { Link } from 'react-router-dom';
 import Contact from '../components/Contact';
 import { FaPlus } from 'react-icons/fa';
 
-export default function Home({ contacts, currentUser, loading, setLoading }) {
+export default function Home({ contacts, currentUser, loading }) {
   if (loading) {
     return null;
   }
   return (
-    <div className="max-w-screen-xl mt-28 mx-auto">
+    <div className="max-w-screen-xl mx-auto mt-28">
       {!loading && contacts.length === 0 ? (
         <div className="text-xl text-center text-indigo-500">
           You don't have any contacts yet..!
         </div>
       ) : (
-        <div className="space-y-4 shadow-xl border m-4 p-4 border-indigo-600 rounded-md">
+        <div className="p-4 m-4 space-y-4 border border-indigo-600 rounded-md shadow-xl">
           <div className="flex justify-between pl-2 my-4 border-b border-blue-500 sm:pl-12">
             <div className="grid items-center flex-1 grid-cols-2 mx-5 my-2 space-x-2 sm:grid-cols-3 md:grid-cols-4">
               <h4>Name</h4>
@@ -32,12 +32,12 @@ export default function Home({ contacts, currentUser, loading, setLoading }) {
           ))}
         </div>
       )}
-      <div className="fixed left-0 bottom-4 flex justify-end right-4 max-w-screen-xl mx-auto">
+      <div className="fixed left-0 flex justify-end max-w-screen-xl mx-auto bottom-4 right-4">
         <Link
           to="/new"
           className="text-white bg-indigo-600 rounded-full shadow-md"
         >
-          <FaPlus size={50} className="text-white p-2" />
+          <FaPlus size={50} className="p-2 text-white" />
         </Link>
       </div>
     </div>
