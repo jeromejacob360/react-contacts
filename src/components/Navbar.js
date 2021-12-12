@@ -32,7 +32,7 @@ export default function Navbar({ setContacts, contacts, loading }) {
             {loading && (
               <ImSpinner2
                 size={68}
-                className="hidden sm:block absolute animate-spin text-red-700"
+                className="hidden sm:block absolute animate-spin text-white"
                 style={{ left: '-.65rem', top: '-.15rem' }}
               />
             )}

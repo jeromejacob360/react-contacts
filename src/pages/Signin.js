@@ -26,7 +26,7 @@ export default function Signin({ setLoading }) {
   }
 
   return (
-    <main className="max-w-screen-sm px-2 mx-auto mt-20">
+    <main className="max-w-screen-sm px-2 mx-auto mt-28">
       <div className="px-6 pb-6 border-2 border-indigo-600 rounded-md">
         <h1 className="px-1 my-6 text-4xl text-indigo-600">Sign in</h1>
         <form action="" className="flex flex-col space-y-4">

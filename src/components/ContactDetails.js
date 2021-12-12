@@ -4,14 +4,15 @@ import { useParams } from 'react-router';
 import { db } from '../firebase/firebase';
 import { AiOutlinePhone, AiFillStar, AiOutlineLeft } from 'react-icons/ai';
 import { BiEnvelope } from 'react-icons/bi';
-import { FaEllipsisV } from 'react-icons/fa';
 import { Link } from 'react-router-dom';
-import ContactOptions from './ContactOptions';
 import no_avatar from '../images/no_avatar.jpg';
+import { AiFillDelete } from 'react-icons/ai';
+import DeleteModal from './DeleteModal';
 
 export default function ContactDetails({ currentUser }) {
   const [contact, setContact] = useState({});
-  const [openOptions, setOpenOptions] = useState(false);
+  const [deleteModal, setDeleteModal] = useState(false);
+
   const { id } = useParams();
 
   useEffect(() => {
@@ -34,10 +35,6 @@ export default function ContactDetails({ currentUser }) {
       },
       { merge: true },
     );
-  }
-
-  function toggleOptions() {
-    setOpenOptions(true);
   }
 
   return (
@@ -67,14 +64,7 @@ export default function ContactDetails({ currentUser }) {
           />
 
           <div className="relative px-4">
-            <FaEllipsisV onClick={toggleOptions} />
-            {openOptions && (
-              <ContactOptions
-                currentUser={currentUser}
-                setOptionsOpen={setOpenOptions}
-                email={contact?.email}
-              />
-            )}
+            <AiFillDelete size={25} onClick={() => setDeleteModal(true)} />
           </div>
           <Link
             to={{ pathname: '/person/edit/' + contact?.email, state: contact }}
@@ -98,6 +88,13 @@ export default function ContactDetails({ currentUser }) {
           </div>
         </address>
       </div>
+      {deleteModal && (
+        <DeleteModal
+          setDeleteModal={setDeleteModal}
+          currentUser={currentUser}
+          email={contact.email}
+        />
+      )}
     </div>
   );
 }

@@ -17,7 +17,7 @@ import PageNotFound from './pages/PageNotFound';
 
 function App() {
   const [contactsBackup, setContactsBackup] = useState([]);
-  const [contacts, setContacts] = useState(['']);
+  const [contacts, setContacts] = useState([]);
   const [currentUser, setCurrentUser] = useState({});
   const [loading, setLoading] = useState(false);
 
@@ -36,11 +36,13 @@ function App() {
   return (
     <>
       <Router>
-        <Navbar
-          loading={loading}
-          setContacts={setContacts}
-          contacts={contactsBackup}
-        />
+        {currentUser && (
+          <Navbar
+            loading={loading}
+            setContacts={setContacts}
+            contacts={contactsBackup}
+          />
+        )}
         <Switch>
           <Route exact path="/">
             {currentUser ? (

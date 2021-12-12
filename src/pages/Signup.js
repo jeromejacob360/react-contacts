@@ -73,7 +73,7 @@ export default function Signup() {
   }
 
   return (
-    <main className="max-w-screen-sm px-2 mx-auto mt-20">
+    <main className="max-w-screen-sm px-2 mx-auto mt-28">
       <div className="px-6 pb-6 border-2 border-indigo-600 rounded-md">
         <form action="" className="flex flex-col space-y-4 relative">
           <div className="flex items-center justify-between">

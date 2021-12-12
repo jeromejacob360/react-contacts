@@ -5,7 +5,7 @@ import { db } from '../firebase/firebase';
 import { Link } from 'react-router-dom';
 import { deleteImage, uploadImage } from '../helpers/uploadImage';
 import ImageSetter from './ImageSetter';
-import { ImSpinner10 } from 'react-icons/im';
+import { CgSpinner } from 'react-icons/cg';
 import { AiOutlineCloseCircle } from 'react-icons/ai';
 
 const initialState = {
@@ -22,6 +22,7 @@ export default function CreateContact({ currentUser }) {
   const [newContact, setNewContact] = useState(initialState);
   const [avatarFile, setAvatarFile] = useState(null);
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
 
   const firstNameRef = useRef();
 
@@ -50,6 +51,7 @@ export default function CreateContact({ currentUser }) {
 
   //for updating input fields
   function setvalue(e) {
+    setError('');
     setNewContact((prev) => ({
       ...prev,
       [e.target.name]: e.target.value,
@@ -67,36 +69,42 @@ export default function CreateContact({ currentUser }) {
   async function addContactToDB(e) {
     e.preventDefault();
 
-    if (currentUser)
-      if (newContact.email) {
-        const docId = id || newContact.email;
-        // add contact to firestore
-        setLoading(true);
-        try {
-          if (!existingContact) newContact.imageURL = '';
+    setError('');
 
-          await setDoc(
-            doc(db, 'contactsApp/userContacts', currentUser.email, docId),
-            { ...newContact, docId },
-          );
-          setLoading(false);
+    if (!currentUser) return;
+    const { firstName, email } = newContact;
+    if (!firstName || !email) {
+      setError('First name and email are required');
+      return;
+    }
 
-          setNewContact(initialState);
-          history.push('/');
-        } catch (error) {
-          setLoading(false);
-          console.log(`error`, error.message);
-        }
+    const docId = id || newContact.email;
+    // add contact to firestore
+    setLoading(true);
+    try {
+      if (!existingContact) newContact.imageURL = '';
 
-        const storageLocation = currentUser.email + '/' + docId;
-        const dbLocation = `contactsApp/userContacts/${currentUser.email}/${docId}`;
+      await setDoc(
+        doc(db, 'contactsApp/userContacts', currentUser.email, docId),
+        { ...newContact, docId },
+      );
+      setLoading(false);
 
-        if (avatarFile) {
-          uploadImage(avatarFile, storageLocation, dbLocation);
-        } else {
-          deleteImage(storageLocation, dbLocation);
-        }
-      }
+      setNewContact(initialState);
+      history.push('/');
+    } catch (error) {
+      setLoading(false);
+      console.log(`error`, error.message);
+    }
+
+    const storageLocation = currentUser.email + '/' + docId;
+    const dbLocation = `contactsApp/userContacts/${currentUser.email}/${docId}`;
+
+    if (avatarFile) {
+      uploadImage(avatarFile, storageLocation, dbLocation);
+    } else {
+      deleteImage(storageLocation, dbLocation);
+    }
   }
 
   return (
@@ -105,63 +113,72 @@ export default function CreateContact({ currentUser }) {
         <AiOutlineCloseCircle size={30} className={`text-indigo-600`} />
       </Link>
 
-      <form className="flex items-end justify-between">
-        <ImageSetter
-          avatarFile={avatarFile}
-          setAvatarFile={setAvatarFile}
-          defaultImage={newContact.imageURL}
+      <form className="flex flex-col space-y-4">
+        <div className="flex items-end justify-between">
+          <ImageSetter
+            avatarFile={avatarFile}
+            setAvatarFile={setAvatarFile}
+            defaultImage={newContact.imageURL}
+          />
+          <button
+            className="btn relative"
+            type="submit"
+            onClick={addContactToDB}
+          >
+            <p> SAVE</p>
+            {loading && (
+              <CgSpinner className="animate-spin absolute text-white right-1 top-2" />
+            )}
+          </button>
+        </div>
+        <input
+          className="input"
+          autoComplete="off"
+          type="text"
+          placeholder="First Name"
+          name="firstName"
+          value={newContact?.firstName}
+          onChange={setvalue}
+          ref={firstNameRef}
         />
-        <button className="btn" type="submit" onClick={addContactToDB}>
-          SAVE
-          {loading && <ImSpinner10 className="animate-spin" />}
-        </button>
+        <input
+          className="input"
+          autoComplete="off"
+          type="text"
+          placeholder="Surname"
+          name="surname"
+          value={newContact?.surname}
+          onChange={setvalue}
+        />
+        <input
+          className="input"
+          autoComplete="off"
+          type="text"
+          placeholder="Email"
+          name="email"
+          value={newContact?.email}
+          onChange={setvalue}
+        />
+        <input
+          className="input"
+          autoComplete="off"
+          type="text"
+          placeholder="Phone"
+          name="phone"
+          value={newContact?.phone}
+          onChange={setvalue}
+        />
+        <input
+          className="input"
+          autoComplete="off"
+          type="text"
+          placeholder="Notes"
+          name="notes"
+          value={newContact?.notes}
+          onChange={setvalue}
+        />
+        {error && <p className="text-red-600 text-center">{error}</p>}
       </form>
-      <input
-        className="input"
-        autoComplete="off"
-        type="text"
-        placeholder="First Name"
-        name="firstName"
-        value={newContact?.firstName}
-        onChange={setvalue}
-        ref={firstNameRef}
-      />
-      <input
-        className="input"
-        autoComplete="off"
-        type="text"
-        placeholder="Surname"
-        name="surname"
-        value={newContact?.surname}
-        onChange={setvalue}
-      />
-      <input
-        className="input"
-        autoComplete="off"
-        type="text"
-        placeholder="Email"
-        name="email"
-        value={newContact?.email}
-        onChange={setvalue}
-      />
-      <input
-        className="input"
-        autoComplete="off"
-        type="text"
-        placeholder="Phone"
-        name="phone"
-        value={newContact?.phone}
-        onChange={setvalue}
-      />
-      <input
-        className="input"
-        autoComplete="off"
-        type="text"
-        placeholder="Notes"
-        name="notes"
-        value={newContact?.notes}
-        onChange={setvalue}
-      />
     </div>
   );
 }
