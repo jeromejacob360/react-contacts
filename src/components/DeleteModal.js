@@ -1,5 +1,5 @@
 import { deleteDoc, doc } from 'firebase/firestore';
-import React from 'react';
+import React, { useEffect } from 'react';
 import { db } from '../firebase/firebase';
 import ClickAway from '../helpers/ClickAway';
 import {
@@ -12,7 +12,6 @@ import { useHistory } from 'react-router-dom/cjs/react-router-dom.min';
 import { motion } from 'framer-motion';
 
 export default function DeleteModal({ setDeleteModal, currentUser, email }) {
-  console.log('DeleteModal');
   const history = useHistory();
 
   async function deleteContact(e) {
@@ -22,7 +21,6 @@ export default function DeleteModal({ setDeleteModal, currentUser, email }) {
     await deleteDoc(
       doc(db, 'contactsApp/userContacts', `${currentUser.email}/${email}`),
     );
-    console.log('Deleted');
     const storage = getStorage();
     const avatarRef = ref(storage, `${currentUser.email}/${email}`);
     getDownloadURL(avatarRef).then(async (url) => {
@@ -33,12 +31,17 @@ export default function DeleteModal({ setDeleteModal, currentUser, email }) {
     history.push('/');
   }
 
+  useEffect(() => {
+    const element = document.getElementById('home');
+    if (element) element.style.transform = 'none';
+  }, []);
+
   return (
     <motion.div
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ easin: 'linear' }}
-      className="fixed inset-0 z-10 flex items-center justify-center w-screen h-screen bg-black bg-opacity-10 MODAL no-print"
+      className="fixed inset-0 z-50 flex items-center justify-center w-full h-full p-4 bg-black bg-opacity-20"
     >
       <ClickAway setOption={setDeleteModal}>
         <div className="p-4 bg-white border rounded-md shadow-md w-96 MODAL">

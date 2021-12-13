@@ -1,32 +1,19 @@
-import React from 'react';
 import { Link } from 'react-router-dom';
 import Contact from '../components/Contact';
 import { FaPlus } from 'react-icons/fa';
-import { motion } from 'framer-motion';
+import { AnimatePresence, motion } from 'framer-motion';
+import { useRef } from 'react';
 
 export default function Home({
   contacts,
   contactsBackup,
   currentUser,
   loading,
+  starredContact,
 }) {
   if (loading) {
     return null;
   }
-
-  // const sorter = (a, b) => {
-  //   const nameA = (a.firstName + a.surname).toUpperCase();
-  //   const nameB = (b.firstName + b.surname).toUpperCase();
-  //   if (a.starred && b.starred) {
-  //     return nameA.localeCompare(nameB);
-  //   }
-  //   if (!a.starred && !b.starred) {
-  //     return nameA.localeCompare(nameB);
-  //   }
-  //   if (a.starred && !b.starred) return -1;
-  //   if (!a.starred && b.starred) return 1;
-  //   return 0;
-  // };
 
   return (
     <div className="max-w-screen-xl mx-auto mt-28">
@@ -40,7 +27,8 @@ export default function Home({
           animate={{ opacity: 1, y: 0 }}
           transition={{ easin: 'linear' }}
           layout
-          className="p-4 m-4 space-y-4 border border-indigo-600 rounded-md shadow-xl"
+          id="home"
+          className="p-4 m-4 border border-indigo-600 rounded-md shadow-xl transform-none"
         >
           <div className="flex justify-between pl-2 border-b border-blue-500 sm:pl-12">
             <motion.div
@@ -53,6 +41,43 @@ export default function Home({
               <h5 className="hidden md:block">Notes</h5>
             </motion.div>
           </div>
+          {starredContact && (
+            <h2 className="px-10 pb-3 mt-2 text-xs font-semibold text-gray-600 uppercase border-b">
+              Starred contacts
+            </h2>
+          )}
+
+          {contacts
+            ?.sort((a, b) => {
+              return (a.firstName + a.surname)
+                .toUpperCase()
+                .localeCompare((b.firstName + b.surname).toUpperCase());
+            })
+            .map((contact) => {
+              return (
+                <AnimatePresence>
+                  {contact.starred ? (
+                    <motion.div
+                      initial={{ height: 0, opacity: 0 }}
+                      animate={{ height: 'auto', opacity: 1 }}
+                      exit={{ height: 0, opacity: 0 }}
+                      key={contact.email}
+                    >
+                      <Contact
+                        currentUser={currentUser}
+                        contact={contact}
+                        key={contact.email}
+                      />
+                    </motion.div>
+                  ) : null}
+                </AnimatePresence>
+              );
+            })}
+          {starredContact && (
+            <h2 className="px-10 py-2 text-xs font-semibold text-gray-600 uppercase border-t border-b">
+              Contacts
+            </h2>
+          )}
           {contacts
             ?.sort((a, b) => {
               return (a.firstName + a.surname)

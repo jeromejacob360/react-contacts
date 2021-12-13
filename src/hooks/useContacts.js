@@ -26,12 +26,12 @@ export default function useContacts(
           return;
         }
         setLoading(false);
+        const contacts = [];
         snapshot.docChanges().forEach((change) => {
           const newData = change.doc.data();
 
           if (change.type === 'added') {
-            setContacts((prev) => [...prev, newData]);
-            setContactsBackup((prev) => [...prev, newData]);
+            contacts.push(newData);
           } else if (change.type === 'modified') {
             setContactsBackup((prev) =>
               prev.map((contact) =>
@@ -52,6 +52,8 @@ export default function useContacts(
             });
           }
         });
+        setContacts((prev) => [...prev, ...contacts]);
+        setContactsBackup((prev) => [...prev, ...contacts]);
       });
     }
     return unsub;

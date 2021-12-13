@@ -20,6 +20,17 @@ function App() {
   const [contacts, setContacts] = useState([]);
   const [currentUser, setCurrentUser] = useState({});
   const [loading, setLoading] = useState(true);
+  const [starredContact, setStarredContact] = useState(false);
+
+  useEffect(() => {
+    setStarredContact(false);
+    contacts.forEach((contact) => {
+      if (contact.starred) {
+        setStarredContact(true);
+        return;
+      }
+    });
+  }, [contacts]);
 
   useEffect(() => {
     getAuth().onAuthStateChanged((currentUser) => {
@@ -47,6 +58,7 @@ function App() {
           <Route exact path="/">
             {currentUser ? (
               <Home
+                starredContact={starredContact}
                 currentUser={currentUser}
                 contacts={contacts}
                 setContacts={setContacts}

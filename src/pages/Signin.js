@@ -22,7 +22,6 @@ export default function Signin({ setLoading }) {
       setLoading(true);
       setError(false);
       await signInWithEmailAndPassword(getAuth(), user.email, user.password);
-      console.log('SIGNED IN');
       history.push('/');
     } catch (error) {
       setLoading(false);

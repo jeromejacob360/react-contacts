@@ -88,7 +88,7 @@ export default function CreateContact({ currentUser }) {
       const snap = await getDoc(
         doc(db, 'contactsApp/userContacts', currentUser.email, docId),
       );
-      if (snap.exists) {
+      if (snap.data()) {
         setError('Contact with same email already exists');
         setLoading(false);
         return;
@@ -104,7 +104,6 @@ export default function CreateContact({ currentUser }) {
       history.push('/');
     } catch (error) {
       setLoading(false);
-      console.log(`error`, error.message);
     }
 
     const storageLocation = currentUser.email + '/' + docId;
