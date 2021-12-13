@@ -6,6 +6,7 @@ import { AiFillStar } from 'react-icons/ai';
 import { MdDelete } from 'react-icons/md';
 import { useState } from 'react';
 import DeleteModal from './DeleteModal';
+import { motion } from 'framer-motion';
 
 export default function Contact({ contact, currentUser }) {
   const history = useHistory();
@@ -22,11 +23,14 @@ export default function Contact({ contact, currentUser }) {
 
   return (
     <>
-      <div
+      <motion.div
+        layout
         onClick={(e) => {
           history.push('/person/' + contact.docId);
         }}
-        className="relative  flex items-center justify-between px-2 py-2 rounded-lg cursor-pointer hover:bg-indigo-50 hover:shadow-sm group"
+        className={`relative flex items-center justify-between px-2 py-2 rounded-lg cursor-pointer hover:bg-indigo-50 hover:shadow-sm group
+        ${contact.starred ? 'ring-1 ring-indigo-50' : 'bg-white'}
+        `}
       >
         <img
           className="hidden object-cover w-10 h-10 mr-2 rounded-full sm:block"
@@ -61,7 +65,7 @@ export default function Contact({ contact, currentUser }) {
             />
           </div>
         </div>
-      </div>
+      </motion.div>
       {deleteModal && (
         <DeleteModal
           currentUser={currentUser}

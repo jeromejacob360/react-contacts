@@ -12,6 +12,7 @@ import { Link } from 'react-router-dom';
 import { db } from '../firebase/firebase';
 import ImageSetter from '../components/ImageSetter';
 import { uploadImage } from '../helpers/uploadImage';
+import { motion } from 'framer-motion';
 
 const initialState = {
   firstName: '',
@@ -80,7 +81,12 @@ export default function Signup() {
   }
 
   return (
-    <main className="max-w-screen-sm px-2 mx-auto mt-28">
+    <motion.main
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      transition={{ easin: 'linear' }}
+      className="max-w-screen-sm px-2 mx-auto mt-28"
+    >
       <div className="px-6 pb-6 border-2 border-indigo-600 rounded-md">
         <form action="" className="relative flex flex-col space-y-4">
           <div className="flex items-center justify-between">
@@ -152,6 +158,6 @@ export default function Signup() {
           )}
         </form>
       </div>
-    </main>
+    </motion.main>
   );
 }

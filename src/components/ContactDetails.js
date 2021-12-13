@@ -8,6 +8,7 @@ import { Link } from 'react-router-dom';
 import no_avatar from '../images/no_avatar.jpg';
 import { AiFillDelete } from 'react-icons/ai';
 import DeleteModal from './DeleteModal';
+import { motion } from 'framer-motion';
 
 export default function ContactDetails({ currentUser }) {
   const [contact, setContact] = useState({});
@@ -38,21 +39,26 @@ export default function ContactDetails({ currentUser }) {
   }
 
   return (
-    <div className="max-w-screen-md px-4 mt-28 mx-auto">
+    <motion.div
+      initial={{ opacity: 0, y: 10 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ easin: 'linear' }}
+      className="max-w-screen-md px-4 mx-auto mt-28"
+    >
       <Link to="/">
         <AiOutlineLeft
           size={40}
-          className="border rounded-full p-1 shadow-md"
+          className="p-1 border rounded-full shadow-md"
         />
       </Link>
-      <section className="flex-col flex sm:px-20 justify-center sm:justify-around sm:flex-row items-center px-10 pb-6 mb-4 border-b">
-        <div className="sm:flex flex-col items-center my-10 ">
+      <section className="flex flex-col items-center justify-center px-10 pb-6 mb-4 border-b sm:px-20 sm:justify-around sm:flex-row">
+        <div className="flex-col items-center my-10 sm:flex ">
           <img
-            className="object-cover mx-auto w-48 h-48 mr-2 rounded-full"
+            className="object-cover w-48 h-48 mx-auto mr-2 rounded-2xl"
             src={contact?.imageURL || no_avatar}
             alt=""
           />
-          <h4 className="text-xl text-center mt-4">{`${contact?.firstName} ${contact?.surname}`}</h4>
+          <h4 className="mt-4 text-xl text-center">{`${contact?.firstName} ${contact?.surname}`}</h4>
         </div>
         <div className="flex items-center justify-end">
           <AiFillStar
@@ -78,14 +84,20 @@ export default function ContactDetails({ currentUser }) {
       <div className="block p-4 ml-auto space-x-4 border rounded-md w-96">
         <address>
           <h5 className="mb-4 font-bold">Contact details</h5>
-          <div className="space-x-4 flex items-center mb-4">
+          <a
+            href={`mailto:${contact?.email}`}
+            className="flex items-center mb-4 space-x-4"
+          >
             <BiEnvelope />
             <span>{contact?.email}</span>
-          </div>
-          <div className="space-x-4 flex items-center ">
+          </a>
+          <a
+            href={`tel:${contact.phone} `}
+            className="flex items-center space-x-4 "
+          >
             <AiOutlinePhone />
             <span>{contact?.phone}</span>
-          </div>
+          </a>
         </address>
       </div>
       {deleteModal && (
@@ -95,6 +107,6 @@ export default function ContactDetails({ currentUser }) {
           email={contact.email}
         />
       )}
-    </div>
+    </motion.div>
   );
 }

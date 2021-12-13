@@ -1,4 +1,4 @@
-import { doc, setDoc } from '@firebase/firestore';
+import { doc, setDoc, getDoc } from '@firebase/firestore';
 import { useEffect, useRef, useState } from 'react';
 import { useHistory, useLocation, useParams } from 'react-router';
 import { db } from '../firebase/firebase';
@@ -7,6 +7,7 @@ import { deleteImage, uploadImage } from '../helpers/uploadImage';
 import ImageSetter from './ImageSetter';
 import { CgSpinner } from 'react-icons/cg';
 import { AiOutlineCloseCircle } from 'react-icons/ai';
+import { motion } from 'framer-motion';
 
 const initialState = {
   imageURL: '',
@@ -84,6 +85,15 @@ export default function CreateContact({ currentUser }) {
     try {
       if (!existingContact) newContact.imageURL = '';
 
+      const snap = await getDoc(
+        doc(db, 'contactsApp/userContacts', currentUser.email, docId),
+      );
+      if (snap.exists) {
+        setError('Contact with same email already exists');
+        setLoading(false);
+        return;
+      }
+
       await setDoc(
         doc(db, 'contactsApp/userContacts', currentUser.email, docId),
         { ...newContact, docId },
@@ -108,7 +118,12 @@ export default function CreateContact({ currentUser }) {
   }
 
   return (
-    <div className="flex mt-28 flex-col max-w-screen-sm mx-auto space-y-2 px-4">
+    <motion.div
+      initial={{ opacity: 0, y: 10 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ easin: 'linear' }}
+      className="flex flex-col max-w-screen-sm px-4 mx-auto space-y-2 mt-28"
+    >
       <Link to="/">
         <AiOutlineCloseCircle size={30} className={`text-indigo-600`} />
       </Link>
@@ -121,13 +136,13 @@ export default function CreateContact({ currentUser }) {
             defaultImage={newContact.imageURL}
           />
           <button
-            className="btn relative"
+            className="relative btn"
             type="submit"
             onClick={addContactToDB}
           >
             <p> SAVE</p>
             {loading && (
-              <CgSpinner className="animate-spin absolute text-white right-1 top-2" />
+              <CgSpinner className="absolute text-white animate-spin right-1 top-2" />
             )}
           </button>
         </div>
@@ -177,8 +192,8 @@ export default function CreateContact({ currentUser }) {
           value={newContact?.notes}
           onChange={setvalue}
         />
-        {error && <p className="text-red-600 text-center">{error}</p>}
+        {error && <p className="text-center text-red-600">{error}</p>}
       </form>
-    </div>
+    </motion.div>
   );
 }

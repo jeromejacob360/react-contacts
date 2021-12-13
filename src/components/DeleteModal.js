@@ -9,6 +9,7 @@ import {
   getDownloadURL,
 } from '@firebase/storage';
 import { useHistory } from 'react-router-dom/cjs/react-router-dom.min';
+import { motion } from 'framer-motion';
 
 export default function DeleteModal({ setDeleteModal, currentUser, email }) {
   console.log('DeleteModal');
@@ -33,7 +34,12 @@ export default function DeleteModal({ setDeleteModal, currentUser, email }) {
   }
 
   return (
-    <div className="fixed inset-0 z-10 flex justify-center items-center w-screen h-screen bg-black bg-opacity-10 MODAL no-print">
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      transition={{ easin: 'linear' }}
+      className="fixed inset-0 z-10 flex items-center justify-center w-screen h-screen bg-black bg-opacity-10 MODAL no-print"
+    >
       <ClickAway setOption={setDeleteModal}>
         <div className="p-4 bg-white border rounded-md shadow-md w-96 MODAL">
           <div className="MODAL">Delete this contact?</div>
@@ -51,6 +57,6 @@ export default function DeleteModal({ setDeleteModal, currentUser, email }) {
           </div>
         </div>
       </ClickAway>
-    </div>
+    </motion.div>
   );
 }

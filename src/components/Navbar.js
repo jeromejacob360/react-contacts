@@ -4,9 +4,11 @@ import { Link } from 'react-router-dom';
 import Search from './Search';
 import logo from '../images/logo.png';
 import { ImSpinner2 } from 'react-icons/im';
+import { useLocation } from 'react-router-dom';
 
 export default function Navbar({ setContacts, contacts, loading }) {
   const [user, setUser] = useState(false);
+  const location = useLocation();
 
   useEffect(() => {
     getAuth().onAuthStateChanged((user) => {
@@ -20,10 +22,10 @@ export default function Navbar({ setContacts, contacts, loading }) {
     await getAuth().signOut();
   }
   return (
-    <section className="w-screen h-20 fixed top-0 bg-white shadow-md">
+    <section className="fixed top-0 w-screen h-20 bg-white shadow-md">
       <nav className="flex items-center justify-between w-full h-20 max-w-screen-lg px-4 mx-auto space-x-2">
-        <div className="hidden sm:flex items-center space-x-4">
-          <Link to="/" className="flex items-center space-x-2 relative">
+        <div className="items-center hidden space-x-4 sm:flex">
+          <Link to="/" className="relative flex items-center space-x-2">
             <img
               src={logo} //TODO add user DP here
               className="object-cover w-16 h-16 rounded-full"
@@ -32,7 +34,7 @@ export default function Navbar({ setContacts, contacts, loading }) {
             {loading && (
               <ImSpinner2
                 size={68}
-                className="hidden sm:block absolute animate-spin text-white"
+                className="absolute hidden text-white sm:block animate-spin"
                 style={{ left: '-.65rem', top: '-.15rem' }}
               />
             )}
@@ -41,7 +43,7 @@ export default function Navbar({ setContacts, contacts, loading }) {
             </span>
           </Link>
         </div>
-        {contacts.length > 0 && (
+        {contacts.length > 0 && location.pathname === '/' && (
           <Search setContacts={setContacts} contacts={contacts} />
         )}
         {user && (
