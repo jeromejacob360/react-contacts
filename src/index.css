@@ -7,7 +7,7 @@
 }
 
 .input {
-  @apply p-1 border-b;
+  @apply p-1 mt-3 border-b;
 }
 
 svg {
