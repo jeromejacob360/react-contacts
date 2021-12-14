@@ -12,6 +12,7 @@ module.exports = {
         portrait: { raw: '(orientation: portrait)' },
         print: { raw: 'print' },
       },
+      display: ['hover', 'group-hover'],
     },
   },
   plugins: [],

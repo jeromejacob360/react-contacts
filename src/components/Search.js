@@ -24,7 +24,7 @@ export default function Search({ contacts, setContacts }) {
           ref={ref}
           type="text"
           placeholder="Search"
-          className="flex-1 w-20 bg-transparent outline-none"
+          className="flex-1 w-16 bg-transparent outline-none sm:w-40 md:w-52 lg:w-96"
           onChange={(e) => search(e.target.value)}
         />
         {

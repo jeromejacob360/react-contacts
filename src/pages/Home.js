@@ -27,7 +27,7 @@ export default function Home({
           transition={{ easin: 'linear' }}
           layout
           id="home"
-          className="p-4 m-4 border border-indigo-600 rounded-md shadow-xl transform-none"
+          className="p-4 m-4 border rounded-lg"
         >
           <div className="flex justify-between pl-2 border-b border-blue-500 sm:pl-12">
             <motion.div
@@ -95,7 +95,7 @@ export default function Home({
       <div className="fixed left-0 flex justify-end max-w-screen-xl mx-auto bottom-4 right-4">
         <Link
           to="/new"
-          className="text-white bg-indigo-600 rounded-full shadow-md"
+          className="text-white bg-indigo-600 rounded-full shadow-none"
         >
           <FaPlus size={50} className="p-2 text-white" />
         </Link>

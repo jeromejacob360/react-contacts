@@ -26,7 +26,9 @@ export function uploadImage(image, storageLocation, dbLocation) {
         },
       );
     });
-  } catch (error) {}
+  } catch (error) {
+    console.log(`error`, error);
+  }
 }
 
 export function deleteImage(storageLocation, dbLocation) {

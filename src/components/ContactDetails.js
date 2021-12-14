@@ -6,7 +6,7 @@ import { AiOutlinePhone, AiFillStar, AiOutlineLeft } from 'react-icons/ai';
 import { BiEnvelope } from 'react-icons/bi';
 import { Link } from 'react-router-dom';
 import no_avatar from '../images/no_avatar.jpg';
-import { AiFillDelete } from 'react-icons/ai';
+import { MdDelete } from 'react-icons/md';
 import DeleteModal from './DeleteModal';
 import { motion } from 'framer-motion';
 
@@ -48,7 +48,7 @@ export default function ContactDetails({ currentUser }) {
       <Link to="/">
         <AiOutlineLeft
           size={40}
-          className="p-1 border rounded-full shadow-md"
+          className="p-1 border rounded-full shadow-none"
         />
       </Link>
       <section className="flex flex-col items-center justify-center px-10 pb-6 mb-4 border-b sm:px-20 sm:justify-around sm:flex-row">
@@ -70,7 +70,7 @@ export default function ContactDetails({ currentUser }) {
           />
 
           <div className="relative px-4">
-            <AiFillDelete size={25} onClick={() => setDeleteModal(true)} />
+            <MdDelete size={25} onClick={() => setDeleteModal(true)} />
           </div>
           <Link
             to={{ pathname: '/person/edit/' + contact?.email, state: contact }}
@@ -84,20 +84,18 @@ export default function ContactDetails({ currentUser }) {
       <div className="block p-4 ml-auto space-x-4 border rounded-md w-96">
         <address>
           <h5 className="mb-4 font-bold">Contact details</h5>
-          <a
-            href={`mailto:${contact?.email}`}
-            className="flex items-center mb-4 space-x-4"
-          >
-            <BiEnvelope />
+          <div className="flex items-center mb-4 space-x-2">
+            <a href={`mailto:${contact?.email}`}>
+              <BiEnvelope />
+            </a>
             <span>{contact?.email}</span>
-          </a>
-          <a
-            href={`tel:${contact.phone} `}
-            className="flex items-center space-x-4 "
-          >
-            <AiOutlinePhone />
+          </div>
+          <div className="flex items-center space-x-2">
+            <a href={`tel:${contact?.phone} `}>
+              <AiOutlinePhone />
+            </a>
             <span>{contact?.phone}</span>
-          </a>
+          </div>
         </address>
       </div>
       {deleteModal && (

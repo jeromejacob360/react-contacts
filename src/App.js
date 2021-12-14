@@ -14,6 +14,7 @@ import ContactDetails from './components/ContactDetails';
 import Navbar from './components/Navbar';
 import useContacts from './hooks/useContacts';
 import PageNotFound from './pages/PageNotFound';
+import EditUser from './pages/EditUser';
 
 function App() {
   const [contactsBackup, setContactsBackup] = useState([]);
@@ -104,6 +105,10 @@ function App() {
             ) : (
               <Signin setLoading={setLoading} />
             )}
+          </Route>
+
+          <Route path="/user/edit">
+            {currentUser ? <EditUser /> : <Signin setLoading={setLoading} />}
           </Route>
 
           <Route component={PageNotFound} />

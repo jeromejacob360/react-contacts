@@ -7,7 +7,7 @@ export default function PageNotFound() {
       <h3 className="text-3xl"> Uh oh..!! There is nothing here </h3>
       <div>
         <Link to="/">
-          <button className="border px-4 py-2 rounded-md text-white bg-indigo-500 mt-10 shadow-md cursor-pointer">
+          <button className="border px-4 py-2 rounded-md text-white bg-indigo-500 mt-10 shadow-none cursor-pointer">
             Go home
           </button>
         </Link>

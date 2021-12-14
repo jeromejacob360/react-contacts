@@ -4,8 +4,13 @@ import no_avatar from '../images/no_avatar.jpg';
 import Resizer from 'react-image-file-resizer';
 import { useLocation } from 'react-router-dom';
 import { RiEditBoxLine } from 'react-icons/ri';
+import { BsTrash } from 'react-icons/bs';
 
-export default function ImageSetter({ avatarFile, setAvatarFile }) {
+export default function ImageSetter({
+  avatarFile,
+  setAvatarFile,
+  setAvatarChanged,
+}) {
   const fileRef = useRef();
   const location = useLocation();
 
@@ -35,46 +40,48 @@ export default function ImageSetter({ avatarFile, setAvatarFile }) {
 
   function removeImage(e) {
     e.preventDefault();
+    setAvatarChanged && setAvatarChanged(true);
     setAvatarFile('');
     fileRef.current.value = '';
   }
 
   return (
-    <div>
-      <div className="ml-8">
-        <label
-          htmlFor="image"
-          className="grid w-32 h-32 mx-auto my-2 bg-cover rounded-full place-items-center"
-          style={{
-            backgroundImage: `url(${avatarFile || no_avatar})`,
-            backgroundSize: 'cover',
-          }}
-        >
-          {isEditMode && avatarFile ? (
-            <RiEditBoxLine
-              size={30}
-              className="text-gray-500 bg-white rounded-xl px-1 border ml-24 mt-24"
-            />
-          ) : (
-            <AiOutlinePlusCircle size={40} className="text-gray-600" />
-          )}
-          <input
-            ref={fileRef}
-            type="file"
-            accept="image/*"
-            id="image"
-            className="hidden input"
-            onChange={(e) => {
-              setResizedImage(e.target.files[0]);
-            }}
+    <div className="relative flex flex-col items-center">
+      <label
+        htmlFor="image"
+        className="grid w-32 h-32 mx-auto my-2 bg-cover rounded-full place-items-center"
+        style={{
+          backgroundImage: `url(${avatarFile || no_avatar})`,
+          backgroundSize: 'cover',
+        }}
+      >
+        {isEditMode && avatarFile ? (
+          <RiEditBoxLine
+            size={30}
+            className="absolute px-1 mt-24 ml-24 text-blue-500 bg-white border -bottom-2 right-4 rounded-xl"
           />
-        </label>
-        {avatarFile && (
-          <button onClick={removeImage} className="text-xs btn">
-            Remove image
-          </button>
+        ) : (
+          <AiOutlinePlusCircle size={40} className="text-gray-600" />
         )}
-      </div>
+        <input
+          ref={fileRef}
+          type="file"
+          accept="image/*"
+          id="image"
+          className="hidden input"
+          onChange={(e) => {
+            setAvatarChanged && setAvatarChanged(true);
+            setResizedImage(e.target.files[0]);
+          }}
+        />
+      </label>
+      {avatarFile && (
+        <BsTrash
+          size={30}
+          className="absolute p-1 text-red-500 bg-white border rounded-full left-4 -bottom-2"
+          onClick={removeImage}
+        />
+      )}
     </div>
   );
 }

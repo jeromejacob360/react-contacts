@@ -24,11 +24,19 @@ export default function CreateContact({ currentUser }) {
   const [avatarFile, setAvatarFile] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+  const [editMode, setEditMode] = useState(false);
 
   const firstNameRef = useRef();
 
   const history = useHistory();
   const { id } = useParams();
+  const location = useLocation();
+
+  useEffect(() => {
+    if (location.pathname.includes('/edit')) {
+      setEditMode(true);
+    }
+  }, [location]);
 
   const { state: existingContact } = useLocation();
 
@@ -121,78 +129,89 @@ export default function CreateContact({ currentUser }) {
       initial={{ opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ easin: 'linear' }}
-      className="flex flex-col max-w-screen-sm px-4 mx-auto space-y-2 mt-28"
+      className="z-20 max-w-screen-md py-8 mx-auto mt-28"
     >
-      <Link to="/">
-        <AiOutlineCloseCircle size={30} className={`text-indigo-600`} />
-      </Link>
-
-      <form className="flex flex-col space-y-4">
-        <div className="flex items-end justify-between">
-          <ImageSetter
-            avatarFile={avatarFile}
-            setAvatarFile={setAvatarFile}
-            defaultImage={newContact.imageURL}
+      <div className="relative px-4 mx-4 border rounded-lg shadow-none sm:px-10">
+        <Link to="/">
+          <AiOutlineCloseCircle
+            size={30}
+            className={`bg-white text-indigo-600 absolute -top-3 -left-3`}
           />
-          <button
-            className="relative btn"
-            type="submit"
-            onClick={addContactToDB}
-          >
-            <p> SAVE</p>
-            {loading && (
-              <CgSpinner className="absolute text-white animate-spin right-1 top-2" />
-            )}
-          </button>
-        </div>
-        <input
-          className="input"
-          autoComplete="off"
-          type="text"
-          placeholder="First Name"
-          name="firstName"
-          value={newContact?.firstName}
-          onChange={setvalue}
-          ref={firstNameRef}
-        />
-        <input
-          className="input"
-          autoComplete="off"
-          type="text"
-          placeholder="Surname"
-          name="surname"
-          value={newContact?.surname}
-          onChange={setvalue}
-        />
-        <input
-          className="input"
-          autoComplete="off"
-          type="text"
-          placeholder="Email"
-          name="email"
-          value={newContact?.email}
-          onChange={setvalue}
-        />
-        <input
-          className="input"
-          autoComplete="off"
-          type="text"
-          placeholder="Phone"
-          name="phone"
-          value={newContact?.phone}
-          onChange={setvalue}
-        />
-        <input
-          className="input"
-          autoComplete="off"
-          type="text"
-          placeholder="Notes"
-          name="notes"
-          value={newContact?.notes}
-          onChange={setvalue}
-        />
-        {error && <p className="text-center text-red-600">{error}</p>}
-      </form>
+        </Link>
+        <form className="flex flex-col pb-10 space-y-4">
+          <div className="flex flex-col items-center justify-between my-8 sm:px-20 sm:items-end sm:flex-row">
+            <ImageSetter
+              avatarFile={avatarFile}
+              setAvatarFile={setAvatarFile}
+              defaultImage={newContact.imageURL}
+            />
+            <button
+              className="relative mt-10 btn"
+              type="submit"
+              onClick={addContactToDB}
+            >
+              <p> SAVE</p>
+              {loading && (
+                <CgSpinner className="absolute text-white animate-spin right-1 top-2" />
+              )}
+            </button>
+          </div>
+          <input
+            className="input"
+            autoComplete="off"
+            type="text"
+            placeholder="First Name"
+            name="firstName"
+            value={newContact?.firstName}
+            onChange={setvalue}
+            ref={firstNameRef}
+          />
+          <input
+            className="input"
+            autoComplete="off"
+            type="text"
+            placeholder="Surname"
+            name="surname"
+            value={newContact?.surname}
+            onChange={setvalue}
+          />
+
+          {editMode ? (
+            <div className="text-gray-500 cursor-not-allowed input">
+              {newContact?.email}
+            </div>
+          ) : (
+            <input
+              className="input"
+              autoComplete="off"
+              type="text"
+              placeholder="Email"
+              name="email"
+              value={newContact?.email}
+              onChange={setvalue}
+            />
+          )}
+          <input
+            className="input"
+            autoComplete="off"
+            type="text"
+            placeholder="Phone"
+            name="phone"
+            value={newContact?.phone}
+            onChange={setvalue}
+          />
+          <input
+            className="input"
+            autoComplete="off"
+            type="text"
+            placeholder="Notes"
+            name="notes"
+            value={newContact?.notes}
+            onChange={setvalue}
+          />
+          {error && <p className="text-center text-red-600">{error}</p>}
+        </form>
+      </div>
     </motion.div>
   );
 }

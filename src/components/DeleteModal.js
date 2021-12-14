@@ -18,6 +18,7 @@ export default function DeleteModal({ setDeleteModal, currentUser, email }) {
     e.stopPropagation();
 
     setDeleteModal(false);
+    history.push('/');
     await deleteDoc(
       doc(db, 'contactsApp/userContacts', `${currentUser.email}/${email}`),
     );
@@ -28,7 +29,6 @@ export default function DeleteModal({ setDeleteModal, currentUser, email }) {
         await deleteObject(avatarRef);
       }
     });
-    history.push('/');
   }
 
   useEffect(() => {
@@ -44,7 +44,7 @@ export default function DeleteModal({ setDeleteModal, currentUser, email }) {
       className="fixed inset-0 z-50 flex items-center justify-center w-full h-full p-4 bg-black bg-opacity-20"
     >
       <ClickAway setOption={setDeleteModal}>
-        <div className="p-4 bg-white border rounded-md shadow-md w-96 MODAL">
+        <div className="p-4 bg-white border rounded-md shadow-none w-96 MODAL">
           <div className="MODAL">Delete this contact?</div>
           <div className="flex justify-end mt-6 space-x-4 MODAL">
             <button

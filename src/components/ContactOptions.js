@@ -27,7 +27,7 @@ export default function ContactOptions({
   return (
     <ClickAway setOption={setOptionsOpen}>
       <div
-        className={`bg-gray-50 rounded-md shadow-md py-2 absolute right-5 no-print ${
+        className={`bg-gray-50 rounded-md shadow-none py-2 absolute right-5 no-print ${
           reverseMenu ? '-top-24' : 'top-10'
         } z-10`}
       >

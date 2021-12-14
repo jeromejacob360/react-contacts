@@ -3,13 +3,16 @@ import React, { useCallback, useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import Search from './Search';
 import logo from '../images/logo.png';
+import noAvatar from '../images/no_avatar.jpg';
 import { ImSpinner8 } from 'react-icons/im';
 import { useLocation } from 'react-router-dom';
-import { doc, getDoc } from 'firebase/firestore';
+import { doc, onSnapshot } from 'firebase/firestore';
 import { db } from '../firebase/firebase';
+import { RiEditBoxLine } from 'react-icons/ri';
 
 export default function Navbar({ setContacts, contacts, loading }) {
-  const [user, setUser] = useState(false);
+  const [currentUser, setCurrentUser] = useState(false);
+  const [user, setUser] = useState('');
   const [userAvatar, setUserAvatar] = useState(logo);
 
   const location = useLocation();
@@ -17,23 +20,25 @@ export default function Navbar({ setContacts, contacts, loading }) {
   useEffect(() => {
     getAuth().onAuthStateChanged((user) => {
       if (user) {
-        setUser(user);
-      } else setUser(false);
+        setCurrentUser(user);
+      } else setCurrentUser(false);
     });
   }, []);
 
   const getUserAvatar = useCallback(async () => {
-    if (!user) return;
-    await getDoc(
-      doc(db, `contactsApp/userDetails/placeHolder/${user.email}`),
-    ).then(async (doc) => {
-      if (doc.data()) {
-        setUserAvatar(doc.data().imageURL);
-      } else {
-        setUserAvatar(logo);
-      }
-    });
-  }, [user]);
+    if (!currentUser) return;
+    onSnapshot(
+      doc(db, `contactsApp/userDetails/placeHolder/${currentUser.email}`),
+      (doc) => {
+        if (doc.data()) {
+          setUser(doc.data());
+          setUserAvatar(doc.data().imageURL);
+        } else {
+          setUserAvatar(logo);
+        }
+      },
+    );
+  }, [currentUser]);
 
   useEffect(() => {
     getUserAvatar();
@@ -44,23 +49,29 @@ export default function Navbar({ setContacts, contacts, loading }) {
   }
   return (
     <section className="fixed top-0 w-screen h-20 bg-white shadow-md">
-      <nav className="flex items-center justify-between w-full h-20 max-w-screen-lg px-4 mx-auto space-x-2">
-        <div className="items-center hidden space-x-4 sm:flex">
-          <Link to="/" className="relative flex items-center space-x-2">
+      <nav className="flex items-center justify-between w-full h-20 max-w-screen-lg px-4 mx-auto space-x-2 sm:px-10 md:px-20">
+        <div className="items-center space-x-4">
+          <Link to="/" className="relative flex items-center space-x-2 group">
             <img
-              src={userAvatar} //TODO add user DP here
+              src={userAvatar || noAvatar}
               className="object-cover w-16 h-16 rounded-full"
               alt=""
             />
             {loading && (
               <ImSpinner8
                 size={75}
-                className="absolute hidden text-indigo-800 sm:block animate-spin"
+                className="absolute hidden text-gray-300 sm:block animate-spin"
                 style={{ left: '-.75rem', top: '-.3rem' }}
               />
             )}
-            <span className="hidden text-xl text-gray-700 sm:block">
-              {user.displayName}
+            <Link to={`/user/edit`}>
+              <RiEditBoxLine
+                size={30}
+                className="absolute hidden px-1 text-gray-500 bg-white border -bottom-5 left-9 group-hover:block rounded-xl"
+              />
+            </Link>
+            <span className="hidden text-xl text-gray-700 cursor-default sm:block">
+              {user.firstName && user.firstName + ' ' + user.surName}
             </span>
           </Link>
         </div>
@@ -69,7 +80,7 @@ export default function Navbar({ setContacts, contacts, loading }) {
         )}
         {user && (
           <button
-            className="px-3 py-1 text-indigo-600 border-2 border-indigo-600 rounded-md shadow-md"
+            className="px-3 py-1 text-indigo-600 border-2 border-indigo-600 rounded-md shadow-none"
             onClick={signout}
           >
             Signout
