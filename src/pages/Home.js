@@ -2,7 +2,6 @@ import { Link } from 'react-router-dom';
 import Contact from '../components/Contact';
 import { FaPlus } from 'react-icons/fa';
 import { AnimatePresence, motion } from 'framer-motion';
-import { useRef } from 'react';
 
 export default function Home({
   contacts,
