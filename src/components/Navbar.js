@@ -1,13 +1,16 @@
 import { getAuth } from '@firebase/auth';
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import Search from './Search';
 import logo from '../images/logo.png';
-import { ImSpinner2 } from 'react-icons/im';
+import { ImSpinner8 } from 'react-icons/im';
 import { useLocation } from 'react-router-dom';
+import { doc, getDoc } from 'firebase/firestore';
+import { db } from '../firebase/firebase';
 
 export default function Navbar({ setContacts, contacts, loading }) {
   const [user, setUser] = useState(false);
+  const [userAvatar, setUserAvatar] = useState(logo);
 
   const location = useLocation();
 
@@ -19,6 +22,23 @@ export default function Navbar({ setContacts, contacts, loading }) {
     });
   }, []);
 
+  const getUserAvatar = useCallback(async () => {
+    if (!user) return;
+    await getDoc(
+      doc(db, `contactsApp/userDetails/placeHolder/${user.email}`),
+    ).then(async (doc) => {
+      if (doc.data()) {
+        setUserAvatar(doc.data().imageURL);
+      } else {
+        setUserAvatar(logo);
+      }
+    });
+  }, [user]);
+
+  useEffect(() => {
+    getUserAvatar();
+  }, [getUserAvatar]);
+
   async function signout() {
     await getAuth().signOut();
   }
@@ -28,15 +48,15 @@ export default function Navbar({ setContacts, contacts, loading }) {
         <div className="items-center hidden space-x-4 sm:flex">
           <Link to="/" className="relative flex items-center space-x-2">
             <img
-              src={logo} //TODO add user DP here
+              src={userAvatar} //TODO add user DP here
               className="object-cover w-16 h-16 rounded-full"
               alt=""
             />
             {loading && (
-              <ImSpinner2
-                size={68}
-                className="absolute hidden text-white sm:block animate-spin"
-                style={{ left: '-.65rem', top: '-.15rem' }}
+              <ImSpinner8
+                size={75}
+                className="absolute hidden text-indigo-800 sm:block animate-spin"
+                style={{ left: '-.75rem', top: '-.3rem' }}
               />
             )}
             <span className="hidden text-xl text-gray-700 sm:block">
