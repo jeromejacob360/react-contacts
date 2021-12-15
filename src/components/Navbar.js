@@ -51,12 +51,14 @@ export default function Navbar({ setContacts, contacts, loading }) {
     <section className="fixed top-0 w-screen h-20 bg-white shadow-md">
       <nav className="flex items-center justify-between w-full h-20 max-w-screen-lg px-4 mx-auto space-x-2 sm:px-10 md:px-20">
         <div className="items-center space-x-4">
-          <Link to="/" className="relative flex items-center space-x-2 group">
-            <img
-              src={userAvatar || noAvatar}
-              className="object-cover w-16 h-16 rounded-full"
-              alt=""
-            />
+          <div className="relative flex items-center space-x-2 group">
+            <Link to="/">
+              <img
+                src={userAvatar || noAvatar}
+                className="object-cover w-16 h-16 rounded-full"
+                alt=""
+              />
+            </Link>
             {loading && (
               <ImSpinner8
                 size={75}
@@ -73,7 +75,7 @@ export default function Navbar({ setContacts, contacts, loading }) {
             <span className="hidden text-xl text-gray-700 cursor-default sm:block">
               {user.firstName && user.firstName + ' ' + user.surName}
             </span>
-          </Link>
+          </div>
         </div>
         {contacts.length > 0 && location.pathname === '/' && (
           <Search setContacts={setContacts} contacts={contacts} />

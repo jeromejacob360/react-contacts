@@ -54,13 +54,12 @@ export default function Home({
             })
             .map((contact) => {
               return (
-                <AnimatePresence>
+                <AnimatePresence key={contact.email}>
                   {contact.starred ? (
                     <motion.div
                       initial={{ height: 0, opacity: 0 }}
                       animate={{ height: 'auto', opacity: 1 }}
                       exit={{ height: 0, opacity: 0 }}
-                      key={contact.email}
                     >
                       <Contact
                         currentUser={currentUser}

@@ -1,4 +1,4 @@
-import { doc, setDoc, getDoc } from '@firebase/firestore';
+import { doc, setDoc } from '@firebase/firestore';
 import { useEffect, useRef, useState } from 'react';
 import { useHistory, useLocation, useParams } from 'react-router';
 import { db } from '../firebase/firebase';
@@ -92,15 +92,6 @@ export default function CreateContact({ currentUser }) {
     setLoading(true);
     try {
       if (!existingContact) newContact.imageURL = '';
-
-      const snap = await getDoc(
-        doc(db, 'contactsApp/userContacts', currentUser.email, docId),
-      );
-      if (snap.data()) {
-        setError('Contact with same email already exists');
-        setLoading(false);
-        return;
-      }
 
       await setDoc(
         doc(db, 'contactsApp/userContacts', currentUser.email, docId),
