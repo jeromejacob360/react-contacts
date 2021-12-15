@@ -50,9 +50,9 @@ export default function Signin({ setLoading }) {
             <option disabled selected value="">
               Select a dummy account
             </option>
-            <option value="jane@gmail.com">jane@gmail.com</option>
-            <option value="john@gmail.com">john@gmail.com</option>
-            <option value="wayne@gmail.com">wayne@gmail.com</option>
+            <option value="joey@gmail.com">joey@gmail.com</option>
+            <option value="monica@gmail.com">monica@gmail.com</option>
+            <option value="chandler@gmail.com">chandler@gmail.com</option>
           </select>
           <p className="text-center ">OR</p>
           <input
