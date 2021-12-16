@@ -10,20 +10,16 @@ import { doc, onSnapshot } from 'firebase/firestore';
 import { db } from '../firebase/firebase';
 import { RiEditBoxLine } from 'react-icons/ri';
 
-export default function Navbar({ setContacts, contacts, loading }) {
-  const [currentUser, setCurrentUser] = useState(false);
+export default function Navbar({
+  setContacts,
+  contacts,
+  loading,
+  currentUser,
+}) {
   const [user, setUser] = useState('');
   const [userAvatar, setUserAvatar] = useState(logo);
 
   const location = useLocation();
-
-  useEffect(() => {
-    getAuth().onAuthStateChanged((user) => {
-      if (user) {
-        setCurrentUser(user);
-      } else setCurrentUser(false);
-    });
-  }, []);
 
   const getUserAvatar = useCallback(async () => {
     if (!currentUser) return;

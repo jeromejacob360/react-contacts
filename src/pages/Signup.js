@@ -1,9 +1,5 @@
 import { useHistory } from 'react-router';
-import {
-  getAuth,
-  createUserWithEmailAndPassword,
-  updateProfile,
-} from 'firebase/auth';
+import { getAuth, createUserWithEmailAndPassword } from 'firebase/auth';
 
 import { setDoc, doc } from '@firebase/firestore';
 
@@ -62,12 +58,13 @@ export default function Signup() {
       );
       // setUser(initialState);
 
-      setTimeout(async () => {
-        await updateProfile(getAuth().currentUser, {
-          displayName: `${user?.firstName} ${user?.surName}`,
-        });
+      const redirectEmail = localStorage.getItem('email');
+      if (redirectEmail) {
+        localStorage.removeItem('email');
+        history.push('/new/' + redirectEmail);
+      } else {
         history.push('/');
-      }, 0);
+      }
     } catch (error) {
       if (error.message === 'Firebase: Error (auth/email-already-in-use).') {
         setError('Email already in use');

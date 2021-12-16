@@ -3,7 +3,8 @@ import { motion } from 'framer-motion';
 import React, { useRef, useState } from 'react';
 import { AiFillEyeInvisible } from 'react-icons/ai';
 import { useHistory } from 'react-router';
-import { Link } from 'react-router-dom';
+import { Link, useParams } from 'react-router-dom';
+import { useEffect } from 'react/cjs/react.development';
 
 export default function Signin({ setLoading }) {
   const [user, setUser] = useState({
@@ -15,6 +16,13 @@ export default function Signin({ setLoading }) {
 
   const history = useHistory();
   const optionsRef = useRef();
+  const { id } = useParams();
+
+  useEffect(() => {
+    if (id) {
+      localStorage.setItem('email', id);
+    }
+  }, [id]);
 
   async function signinUser(e) {
     e.preventDefault();
@@ -22,7 +30,13 @@ export default function Signin({ setLoading }) {
       setLoading(true);
       setError(false);
       await signInWithEmailAndPassword(getAuth(), user.email, user.password);
-      history.push('/');
+      const redirectEmail = localStorage.getItem('email');
+      if (redirectEmail) {
+        localStorage.removeItem('email');
+        history.push('/new/' + redirectEmail);
+      } else {
+        history.push('/');
+      }
     } catch (error) {
       setLoading(false);
       setError(true);
@@ -41,13 +55,14 @@ export default function Signin({ setLoading }) {
         <form action="" className="flex flex-col space-y-4">
           <select
             className="input"
+            defaultValue="default"
             ref={optionsRef}
             onChange={(e) => {
               setError(false);
               setUser({ ...user, email: e.target.value });
             }}
           >
-            <option disabled selected value="">
+            <option disabled value="default">
               Select a dummy account
             </option>
             <option value="joey@gmail.com">joey@gmail.com</option>

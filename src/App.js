@@ -19,7 +19,7 @@ import EditUser from './pages/EditUser';
 function App() {
   const [contactsBackup, setContactsBackup] = useState([]);
   const [contacts, setContacts] = useState([]);
-  const [currentUser, setCurrentUser] = useState({});
+  const [currentUser, setCurrentUser] = useState('');
   const [loading, setLoading] = useState(true);
   const [starredContact, setStarredContact] = useState(false);
 
@@ -50,6 +50,7 @@ function App() {
       <Router>
         {currentUser && (
           <Navbar
+            currentUser={currentUser}
             loading={loading}
             setContacts={setContacts}
             contacts={contactsBackup}
@@ -84,6 +85,14 @@ function App() {
           </Route>
 
           <Route exact path="/new">
+            {currentUser ? (
+              <CreateContact currentUser={currentUser} />
+            ) : (
+              <Signin setLoading={setLoading} />
+            )}
+          </Route>
+
+          <Route exact path="/new/:id">
             {currentUser ? (
               <CreateContact currentUser={currentUser} />
             ) : (
