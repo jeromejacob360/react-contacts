@@ -45,7 +45,6 @@ export default function Home({
               Starred contacts
             </h2>
           )}
-
           {contacts
             ?.sort((a, b) => {
               return (a.firstName + a.surname)
@@ -57,6 +56,7 @@ export default function Home({
                 <AnimatePresence key={contact.email}>
                   {contact.starred ? (
                     <motion.div
+                      className="odd:bg-gray-50"
                       initial={{ height: 0, opacity: 0 }}
                       animate={{ height: 'auto', opacity: 1 }}
                       exit={{ height: 0, opacity: 0 }}
@@ -83,11 +83,15 @@ export default function Home({
                 .localeCompare((b.firstName + b.surname).toUpperCase());
             })
             .map((contact) => (
-              <Contact
-                currentUser={currentUser}
-                contact={contact}
+              <motion.div
+                className="odd:bg-gray-50"
+                initial={{ height: 0, opacity: 0 }}
+                animate={{ height: 'auto', opacity: 1 }}
+                exit={{ height: 0, opacity: 0 }}
                 key={contact.email}
-              />
+              >
+                <Contact currentUser={currentUser} contact={contact} />
+              </motion.div>
             ))}
         </motion.div>
       )}

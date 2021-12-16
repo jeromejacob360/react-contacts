@@ -13,6 +13,7 @@ module.exports = {
         print: { raw: 'print' },
       },
       display: ['hover', 'group-hover'],
+      backgroundColor: ['odd'],
     },
   },
   plugins: [],
