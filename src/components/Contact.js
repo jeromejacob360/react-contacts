@@ -70,7 +70,7 @@ export default function Contact({ contact, currentUser }) {
         <DeleteModal
           currentUser={currentUser}
           setDeleteModal={setDeleteModal}
-          email={contact.email}
+          contact={contact}
         />
       )}
     </>

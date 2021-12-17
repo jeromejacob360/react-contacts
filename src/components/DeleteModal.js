@@ -11,24 +11,34 @@ import {
 import { useHistory } from 'react-router-dom/cjs/react-router-dom.min';
 import { motion } from 'framer-motion';
 
-export default function DeleteModal({ setDeleteModal, currentUser, email }) {
+export default function DeleteModal({ setDeleteModal, currentUser, contact }) {
   const history = useHistory();
 
   async function deleteContact(e) {
     e.stopPropagation();
 
-    setDeleteModal(false);
-    history.push('/');
-    await deleteDoc(
-      doc(db, 'contactsApp/userContacts', `${currentUser.email}/${email}`),
-    );
-    const storage = getStorage();
-    const avatarRef = ref(storage, `${currentUser.email}/${email}`);
-    getDownloadURL(avatarRef).then(async (url) => {
-      if (url) {
-        await deleteObject(avatarRef);
-      }
-    });
+    try {
+      setDeleteModal(false);
+      history.push('/');
+      await deleteDoc(
+        doc(
+          db,
+          'contactsApp/userContacts',
+          `${currentUser.email}/${contact.email}`,
+        ),
+      );
+      const storage = getStorage();
+      const avatarRef = ref(storage, `${currentUser.email}/${contact.email}`);
+      if (!contact.imageURL) return;
+
+      getDownloadURL(avatarRef)
+        .then(async (url) => {
+          if (url) {
+            await deleteObject(avatarRef);
+          }
+        })
+        .catch(() => {});
+    } catch (e) {}
   }
 
   useEffect(() => {

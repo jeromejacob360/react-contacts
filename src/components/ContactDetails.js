@@ -102,7 +102,7 @@ export default function ContactDetails({ currentUser }) {
         <DeleteModal
           setDeleteModal={setDeleteModal}
           currentUser={currentUser}
-          email={contact.email}
+          contact={contact}
         />
       )}
     </motion.div>

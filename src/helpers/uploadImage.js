@@ -26,9 +26,7 @@ export function uploadImage(image, storageLocation, dbLocation) {
         },
       );
     });
-  } catch (error) {
-    console.log(`error`, error);
-  }
+  } catch (e) {}
 }
 
 export function deleteImage(storageLocation, dbLocation) {
@@ -36,7 +34,9 @@ export function deleteImage(storageLocation, dbLocation) {
   const avatarRef = ref(storage, storageLocation);
 
   // verify that the image exists
-  getDownloadURL(avatarRef).then(async () => {
+  if (!avatarRef) return;
+  getDownloadURL(avatarRef).then(async (url) => {
+    if (!url) return;
     await deleteObject(avatarRef);
     await setDoc(doc(db, dbLocation), { imageURL: '' }, { merge: true });
   });
