@@ -56,15 +56,7 @@ export default function Signup() {
         doc(db, 'contactsApp/userDetails/placeHolder', user.email),
         newContact,
       );
-      // setUser(initialState);
-
-      const redirectEmail = localStorage.getItem('email');
-      if (redirectEmail) {
-        localStorage.removeItem('email');
-        history.push('/new/' + redirectEmail);
-      } else {
-        history.push('/');
-      }
+      history.push('/');
     } catch (error) {
       if (error.message === 'Firebase: Error (auth/email-already-in-use).') {
         setError('Email already in use');

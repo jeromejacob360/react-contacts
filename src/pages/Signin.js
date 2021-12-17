@@ -4,7 +4,6 @@ import React, { useRef, useState } from 'react';
 import { AiFillEyeInvisible } from 'react-icons/ai';
 import { useHistory } from 'react-router';
 import { Link } from 'react-router-dom';
-// import { useEffect } from 'react/cjs/react.development';
 
 export default function Signin({ setLoading }) {
   const [user, setUser] = useState({
@@ -16,13 +15,6 @@ export default function Signin({ setLoading }) {
 
   const history = useHistory();
   const optionsRef = useRef();
-  // const { id } = useParams();
-
-  // useEffect(() => {
-  //   if (id) {
-  //     localStorage.setItem('email', id);
-  //   }
-  // }, [id]);
 
   async function signinUser(e) {
     e.preventDefault();
@@ -30,13 +22,7 @@ export default function Signin({ setLoading }) {
       setLoading(true);
       setError(false);
       await signInWithEmailAndPassword(getAuth(), user.email, user.password);
-      const redirectEmail = localStorage.getItem('email');
-      if (redirectEmail) {
-        localStorage.removeItem('email');
-        history.push('/new/' + redirectEmail);
-      } else {
-        history.push('/');
-      }
+      history.push('/');
     } catch (error) {
       setLoading(false);
       setError(true);
