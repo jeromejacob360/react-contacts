@@ -20,7 +20,8 @@ export default function Signin({ setLoading }) {
   const id = 0;
   useEffect(() => {
     if (id) {
-      localStorage.setItem('email', id);
+      // localStorage.setItem('email', id);
+      console.log('AAAAAAAAAA');
     }
   }, [id]);
 
