@@ -1,4 +1,4 @@
-import { doc, setDoc } from '@firebase/firestore';
+import { doc, setDoc, getDoc } from '@firebase/firestore';
 import {
   deleteObject,
   getDownloadURL,
@@ -29,12 +29,14 @@ export function uploadImage(image, storageLocation, dbLocation) {
   } catch (e) {}
 }
 
-export function deleteImage(storageLocation, dbLocation) {
+export async function deleteImage(storageLocation, dbLocation) {
   const storage = getStorage();
   const avatarRef = ref(storage, storageLocation);
 
+  const document = await getDoc(doc(db, dbLocation));
+  if (document.exists()) return;
+
   // verify that the image exists
-  if (!avatarRef) return;
   getDownloadURL(avatarRef).then(async (url) => {
     if (!url) return;
     await deleteObject(avatarRef);

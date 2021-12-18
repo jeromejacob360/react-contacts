@@ -12,6 +12,7 @@ export default function ImageSetter({
   setAvatarChanged,
 }) {
   const fileRef = useRef();
+  const id = useRef(Math.random());
   const location = useLocation();
 
   const isEditMode = location.pathname.includes('edit');
@@ -48,7 +49,7 @@ export default function ImageSetter({
   return (
     <div className="relative flex flex-col items-center">
       <label
-        htmlFor="image"
+        htmlFor={id.current}
         className="grid w-32 h-32 mx-auto my-2 bg-cover rounded-full place-items-center"
         style={{
           backgroundImage: `url(${avatarFile || no_avatar})`,
@@ -67,7 +68,7 @@ export default function ImageSetter({
           ref={fileRef}
           type="file"
           accept="image/*"
-          id="image"
+          id={id.current}
           className="hidden input"
           onChange={(e) => {
             setAvatarChanged && setAvatarChanged(true);

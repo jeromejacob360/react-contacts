@@ -1,7 +1,11 @@
 import { Link } from 'react-router-dom';
+import { useEffect } from 'react';
 import Contact from '../components/Contact';
 import { FaPlus } from 'react-icons/fa';
 import { AnimatePresence, motion } from 'framer-motion';
+import { deleteDoc, doc, getDoc } from 'firebase/firestore';
+import { db } from '../firebase/firebase';
+import { toast } from 'react-toastify';
 
 export default function Home({
   contacts,
@@ -10,6 +14,18 @@ export default function Home({
   loading,
   starredContact,
 }) {
+  useEffect(() => {
+    async function getInvites() {
+      const res = await getDoc(
+        doc(db, 'contactsApp/invites/for/' + currentUser.email),
+      );
+      if (!res.exists()) return;
+      const invites = Object.keys(res.data());
+      toast.info(<Toast length={invites.length} email={currentUser.email} />);
+    }
+    getInvites();
+  }, [currentUser.email]);
+
   if (loading) {
     return null;
   }
@@ -102,6 +118,39 @@ export default function Home({
         >
           <FaPlus size={50} className="p-2 text-white" />
         </Link>
+      </div>
+    </div>
+  );
+}
+
+function Toast({ length, email }) {
+  const message = `You have ${length} invite${
+    length > 1 ? 's' : ''
+  } to join Whoosapp`;
+
+  async function ignoreInvite() {
+    await deleteDoc(doc(db, 'contactsApp/invites/for/' + email));
+  }
+
+  return (
+    <div className="flex flex-col items-center justify-center">
+      <div> {message}</div>
+      <div className="flex mt-2 space-x-2">
+        <button className="px-4 ml-4 text-white bg-indigo-500 border rounded-md shadow-sm ">
+          <a
+            href="https://react-whoosapp.netlify.app/"
+            target="_blank"
+            rel="noreferrer"
+          >
+            Join
+          </a>
+        </button>
+        <button
+          onClick={ignoreInvite}
+          className="px-4 ml-4 text-white bg-red-500 border rounded-md shadow-sm "
+        >
+          Ignore
+        </button>
       </div>
     </div>
   );

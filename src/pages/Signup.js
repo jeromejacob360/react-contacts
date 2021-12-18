@@ -18,7 +18,7 @@ const initialState = {
   avatar: '',
 };
 
-export default function Signup() {
+export default function Signup({ setLoading }) {
   const [user, setUser] = useState(initialState);
   const [avatarFile, setAvatarFile] = useState(null);
   const [error, setError] = useState('');
@@ -28,6 +28,7 @@ export default function Signup() {
   async function createUser(e) {
     e.preventDefault();
     setError('');
+
     const { email, password, firstName } = user;
     if (!email || !password || !firstName) {
       setError('Please fill in all fields');
@@ -40,6 +41,7 @@ export default function Signup() {
 
     const auth = getAuth();
     const dbLocation = `contactsApp/userDetails/placeHolder/${user.email}`;
+    setLoading(true);
 
     if (avatarFile) {
       uploadImage(avatarFile, `userDPs/${user.email}`, dbLocation);
@@ -60,6 +62,7 @@ export default function Signup() {
     } catch (error) {
       if (error.message === 'Firebase: Error (auth/email-already-in-use).') {
         setError('Email already in use');
+        setLoading(false);
       }
     }
   }

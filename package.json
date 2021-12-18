@@ -12,7 +12,8 @@
     "react-icons": "^4.3.1",
     "react-image-file-resizer": "^0.4.7",
     "react-router-dom": "^5.3.0",
-    "react-scripts": "4.0.3"
+    "react-scripts": "4.0.3",
+    "react-toastify": "^8.1.0"
   },
   "scripts": {
     "start": "craco start",

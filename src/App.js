@@ -81,7 +81,11 @@ function App() {
           </Route>
 
           <Route exact path="/signup">
-            {currentUser ? <Redirect to="/" /> : <Signup />}
+            {currentUser ? (
+              <Redirect to="/" />
+            ) : (
+              <Signup setLoading={setLoading} />
+            )}
           </Route>
 
           <Route exact path="/new">
