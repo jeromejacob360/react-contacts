@@ -6,6 +6,8 @@ import { useHistory } from 'react-router';
 import { Link } from 'react-router-dom';
 
 export default function Signin({ setLoading }) {
+  const redirectUrl = window.location.search.split('=')[1];
+
   const [user, setUser] = useState({
     email: '',
     password: '123123',
@@ -22,7 +24,7 @@ export default function Signin({ setLoading }) {
       setLoading(true);
       setError(false);
       await signInWithEmailAndPassword(getAuth(), user.email, user.password);
-      history.push('/');
+      history.push(redirectUrl);
     } catch (error) {
       setLoading(false);
       setError(true);
